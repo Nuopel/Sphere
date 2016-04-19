@@ -10,7 +10,7 @@ figure(a);subplot(311)
 plot(t,h_sig1,'r')
 hold on
 plot(t,h_sig2,'k')
-legend('Simu','Reel');xlim([0 0.015])
+legend('Simu','Real');xlim([0 0.015])
 xlabel('Time [s]');ylabel('Amplitude ')
 hold off
 
@@ -18,7 +18,7 @@ subplot(312)
 plot(t,h_sig2,'k')
 hold on
 plot(t,h_sig3,'b')
-legend('Reel','Virt');xlim([0 0.015])
+legend('Real','Ambi');xlim([0 0.015])
 xlabel('Time [s]');ylabel('Amplitude ')
 hold off
 
@@ -27,7 +27,7 @@ subplot(313)
 plot(t,h_sig3,'b')
 hold on
 plot(t,h_sig1,'r')
-legend('Virt','Simu');xlim([0 0.015])
+legend('Ambi','Simu');xlim([0 0.015])
 xlabel('Time [s]');ylabel('Amplitude ')
 hold off
 
