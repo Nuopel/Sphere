@@ -9,30 +9,21 @@ N.nbrx_sca = 8; % nombre de micros par ligne
 N.nbry_sca = 7; % nombre de micros par ligne
 [ Antenna ] = AntennArray( ct.pas_m,N.nbrx_sca,N.nbry_sca);N.N_mic=N.nbrx_sca*N.nbry_sca;
 % contruction antenne 2.5 po , 8 mic
-Antenna.Rmicro = sqrt(Antenna.coord_vect(1,:).^2+Antenna.coord_vect(2,:).^2);
-[Antenna.Rmicro_sort, Antenna.index ]= sort(Antenna.Rmicro);
-for ii=1:N.N_mic
-    Antenna.Rmicro_sc(ii) = Antenna.Rmicro_sort(ii);
-    Antenna.index_sc(ii) = Antenna.index(ii);
-    if mod(ii,2) == 0
-        Antenna.Rmicro_sc = circshift(Antenna.Rmicro_sc',[1,0]);Antenna.Rmicro_sc = Antenna.Rmicro_sc';
-        Antenna.index_sc = circshift(Antenna.index_sc',[1 0]);Antenna.index_sc = Antenna.index_sc';    
-        
-    end
-end
+
 
 %% Extraction signal original
-[data.sweep,ct.Fs_sca]=audioread('../Data/sweep_signal_antenne.wav');
+[data.sweep,ct.Fs_sca]=audioread('../../Data/sweep_signal_antenne.wav');
 ct.N_sweep_avg=10;
 
 %% Extraction of the Data source simulated
 if isfield(data, 'sc_simu')==0
-    [data.hp_simu,ct.Fs2_sca]=audioread('../Data/source_simu_10avg_1m_135d.w64');data.hp_simu=[data.hp_simu ;zeros(1,56)];
-    [data.sc_simu_virt ,H_simu_virt,~,N,ct,~] = simu_impulse( data.hp_simu(1:length(data.hp_simu/10),:), data.sweep,Antenna,ct,N);
+    [data.hp_simu,ct.Fs2_sca]=audioread('../../Data/source_simu_10avg_1m_135d.w64');data.hp_simu=[data.hp_simu ;zeros(1,56)];
+    [data.sc_simu_virt ,H_simu_virt,~,N,ct,~] = simu_impulse( data.hp_simu(1:length(data.hp_simu)/10,:), data.sweep(1:length(data.hp_simu)/10,:),Antenna,ct,N);
+    
     
     ct.pos=12;
-    [data.hp_simu_reel,ct.Fs2_sca]=audioread('../Data/source_reelle_virt.w64');data.hp_simu_reel=[data.hp_simu_reel ;zeros(1,1)];
-    [data.sc_simu_reel ,H_simu_reel,ArraySpeaker,N,ct,t] = simu_source_reelle( data.hp_simu_reel, data.sweep,Antenna,ct,N);
+    [data.hp_simu_reel,ct.Fs2_sca]=audioread('../../Data/source_reelle_virt.w64');data.hp_simu_reel=[data.hp_simu_reel ;zeros(1,1)];
+    [data.sc_simu_reel ,H_simu_reel,ArraySpeaker,N,ct,t] = simu_source_reelle( data.hp_simu_reel(1:length(data.hp_simu)/10,:), data.sweep(1:length(data.hp_simu)/10,:),Antenna,ct,N);
 end
 
 if ct.Fs2_sca~=ct.Fs_sca
@@ -47,8 +38,8 @@ end
 
 
 %% Extraction  Data source virtuelle, reelle
-[data.sc_virt, ct.Fs_sca ] =audioread('../Data/source_virtuelle_10avg_1m_135d.w64');data.sc_virt=[data.sc_virt ;zeros(1,56)];
-[data.sc_reel, ct.Fs2_sca ] =audioread('../Data/source_reelle_10avg_1m_135d.w64');data.sc_reel=[data.sc_reel ;zeros(1,56)];
+[data.sc_virt, ct.Fs_sca ] =audioread('../../Data/source_virtuelle_10avg_1m_135d.w64');data.sc_virt=[data.sc_virt ;zeros(1,56)];
+[data.sc_reel, ct.Fs2_sca ] =audioread('../../Data/source_reelle_10avg_1m_135d.w64');data.sc_reel=[data.sc_reel ;zeros(1,56)];
 
 if ct.Fs2_sca~=ct.Fs_sca
     disp('Error the sampling frequency is not the same for input and output');
@@ -65,15 +56,18 @@ H_virt.h_sig=[H_virt.h_sig(1:10000,:) ;zeros(length(H_virt.h_sig)-10000,N.N_mic)
 H_reel.h_sig=[H_reel.h_sig(1:10000,:) ;zeros(length(H_reel.h_sig)-10000,N.N_mic)  ];
 
 
-%%
-text.b='Source virtuelle';text.a='Source reelle';
-% MovieMaker_double(H_reel.h_sig,H_virt.h_sig,Antenna,0.003*ct.Fs_sca,0.015*ct.Fs_sca,ct,text)
+%% Video first comp
+% text.b='Source virtuelle';text.a='Source reelle';
+%  MovieMaker_double(H_reel.h_sig,H_virt.h_sig,Antenna,0.003*ct.Fs_sca,0.015*ct.Fs_sca,ct,text)
 
 %% Plot temporel
+% compare signal virtuel et signal simuler
+% mise en evidence delay
 
 t.h_sig=0:1/ct.Fs_sca:(N.N_sweep_avg-1)/ct.Fs_sca;
+
 ct.micn=28;
-% comp3(H_simu_virt.h_sig(:,ct.micn),H_reel.h_sig(:,ct.micn),H_virt.h_sig(:,ct.micn),t.h_sig,1 )
+comp3(H_simu_virt.h_sig(:,ct.micn),H_reel.h_sig(:,ct.micn),H_virt.h_sig(:,ct.micn),t.h_sig,1)
 
 
 %% Normalisation exploitation donnees temporelles
@@ -89,6 +83,8 @@ H_norm.h_simu_virt=bsxfun(@rdivide,H_simu_virt.h_sig,maxi.max_simu_virt);
 H_norm.h_reel=bsxfun(@rdivide,H_reel.h_sig,maxi.max_reel);
 H_norm.h_virt=bsxfun(@rdivide,H_virt.h_sig,maxi.max_virt);
 
+%%calcul des delay entre les differentes configurations, mise en evidence
+%%mauvais placements, delay general
 for ii=1:N.nbry_sca
     delay.simu_reel_moy(ii,1)= mean(delay.simu_reel(1,(ii-1)*N.nbrx_sca+1:ii*N.nbrx_sca));
     delay.simu_virt_moy(ii,1)= mean(delay.simu_virt(1,(ii-1)*N.nbrx_sca+1:ii*N.nbrx_sca));
@@ -97,19 +93,22 @@ for ii=1:N.nbry_sca
     delay.virt_moy(ii,1)= mean(delay.virt(1,(ii-1)*N.nbrx_sca+1:ii*N.nbrx_sca));
 end
 
+%%calcul delay moyen configuration, repropagation general
 delay.sr=mean(delay.simu_virt_moy-delay.reel_moy);
 delay.rv=mean(delay.virt_moy-delay.reel_moy);
 delay.vs=mean(delay.simu_virt_moy-delay.virt_moy);
-%% 
+%% Plot signaux normalise, 
+% mise en evidence ripple 
 comp3( H_norm.h_simu_virt(:,ct.micn),H_norm.h_reel(:,ct.micn),H_norm.h_virt(:,ct.micn),t.h_sig,2)
 plot_micro( delay.simu_virt,delay.reel,delay.virt,3)
 
-%% Repropagation
-[H_simu_virt.h_sig]= Repropagation(delay.virt-delay.simu_virt,H_simu_virt.h_sig,N);
-H_simu_virt.h_sig_fft=fft(H_simu_virt.h_sig(1:N.N_sweep_avg,:));
-
-[~, delay.simu_repro]=max(H_simu_virt.h_sig);
-plot_micro(delay.simu_repro,delay.reel,delay.virt,4)
+% %% Repropagation
+% % repropagation pour comparaison sig theorique/meas 
+% [H_simu_virt.h_sig]= Repropagation(delay.virt-delay.simu_virt,H_simu_virt.h_sig,N);
+% H_simu_virt.h_sig_fft=fft(H_simu_virt.h_sig(1:N.N_sweep_avg,:));
+% 
+% [~, delay.simu_repro]=max(H_simu_virt.h_sig);
+% plot_micro(delay.simu_repro,delay.reel,delay.virt,4)
 
 %% Mic 24-32 temp plot
 figure(5);
@@ -171,18 +170,19 @@ erreur.value_trans=sqrt(abs(erreur.grid_vect_simu_virt-erreur.grid_vect_virt).^2
 
 % MovieMaker_double_erreur( real(erreur.grid_vect_reel),real(erreur.grid_vect_virt),erreur.value,Antenna,1,length(text.freq) ,ct,text)
 % MovieMaker_double_erreur( real(erreur.grid_vect_simu_reel),real(erreur.grid_vect_simu_virt),erreur.value_simu,Antenna,800,length(text.freq) ,ct,text)
-text.a='Simu virtual sc';text.b='Virtual source ';MovieMaker_double_erreur( real(erreur.grid_vect_simu_virt),real(erreur.grid_vect_virt),erreur.value_trans,Antenna,1,length(text.freq) ,ct,text)
+% text.a='Simu ambisonics sc';text.b='Virtual source ';
+% MovieMaker_double_erreur( real(erreur.grid_vect_simu_virt),real(erreur.grid_vect_virt),erreur.value_trans,Antenna,1,length(text.freq) ,ct,text)
 
 %% Erreur analysis
-figure(7)
-erreur.value_avg=mean(erreur.value');
-for ii=1:1900
-plot(erreur.value(Antenna.index_sc,ii))
-title(text.freq(ii));
-xlabel('Microphone');ylabel('Error');
-ylim([0 500]);
-pause(0.1);
-end
+% figure(7)
+% erreur.value_avg=mean(erreur.value');
+% for ii=1:1900
+% plot(erreur.value(Antenna.index_sc,ii))
+% title(text.freq(ii));
+% xlabel('Microphone');ylabel('Error');
+% ylim([0 500]);
+% pause(0.1);
+% end
 %%
 figure(8)
 subplot(211)
@@ -219,7 +219,7 @@ legend('Simu real','Simu ambisonics')
 subplot(312)
 plot(t.Fsweep_avg,angle([H_simu_reel.h_sig_fft(:,1) H_simu_virt.h_sig_fft(:,1)]));xlim([20 500])
 subplot(313)
-plot(erreur.value(1,:));xlim([20 500])
+plot(erreur.value_simu(1,:));xlim([20 500])
 
 
 figure(11)

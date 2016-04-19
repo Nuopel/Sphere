@@ -23,6 +23,7 @@ sweep_signal_vect=sweep_signal_vect(1:N.N_sca,:,:);
 N.N_sweep=N.N_sca;
 end
 %% Some constant definition and useful vector reprensatation
+ct.N_sweep_avg=1;
 N.N_sweep_avg=floor(N.N_sweep/ct.N_sweep_avg);%  number of point inside the average
 ct.dfe_sweep_avg=ct.Fs_sca/N.N_sweep_avg; % frequency padding
 t.Fsweep_avg=0:ct.dfe_sweep_avg:(N.N_sweep_avg-1)*ct.dfe_sweep_avg; % Frequency vector for fft from sweep averaged

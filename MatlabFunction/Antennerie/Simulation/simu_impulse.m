@@ -39,7 +39,7 @@ D.R_mat=sqrt(sum(cat(3,bsxfun(@minus,Antenna.coord_vect(1,:),ArraySpeaker.x),bsx
 
 %% Propagation des signaux, creation des outils
 %order of the lagrange operator for fractional delay implementation
-N.NOrder=60;
+N.NOrder=128;
 
 %calculation of the number of samples for delay
 [D,System,N]=CreateFilterFracDelay(D,ArraySpeaker,ct,N);
