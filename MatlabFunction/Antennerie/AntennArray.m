@@ -11,7 +11,17 @@ end
 [Antenna.Y_mat,Antenna.X_mat]=meshgrid(Antenna.y,Antenna.x);% create 2 matrix of coordinate associated to the grid
 Antenna.coord_vect = [reshape(Antenna.X_mat,1,numel(Antenna.X_mat));reshape(Antenna.Y_mat,1,numel(Antenna.Y_mat))]; % transform the grid in a single row of pair coordinate of the mic
 
-
+Antenna.Rmicro = sqrt(Antenna.coord_vect(1,:).^2+Antenna.coord_vect(2,:).^2);
+[Antenna.Rmicro_sort, Antenna.index ]= sort(Antenna.Rmicro);
+for ii=1:N.N_mic
+    Antenna.Rmicro_sc(ii) = Antenna.Rmicro_sort(ii);
+    Antenna.index_sc(ii) = Antenna.index(ii);
+    if mod(ii,2) == 0
+        Antenna.Rmicro_sc = circshift(Antenna.Rmicro_sc',[1,0]);Antenna.Rmicro_sc = Antenna.Rmicro_sc';
+        Antenna.index_sc = circshift(Antenna.index_sc',[1 0]);Antenna.index_sc = Antenna.index_sc';    
+        
+    end
+end
 
 end
 
