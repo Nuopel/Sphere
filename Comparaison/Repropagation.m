@@ -15,8 +15,8 @@ end
            var(ii,:)=[zeros(1,delay(ii)) sig_mic_mat(ii,:) zeros(1,D.maxi-delay(ii))];
     end
    
-if a>b
+
     var=permute(var,[2 1 3]);
-end    
+
  
 end

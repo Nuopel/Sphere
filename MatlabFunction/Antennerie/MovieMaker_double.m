@@ -72,7 +72,7 @@ for ii=begining:ending
         if opt==1
         xlabel(text.b)
         end 
-    title(ii/ct.Fs2_sca)
+    title(ii/ct.Fs_sca)
     caxis(cax2)
     shading interp
     axis equal

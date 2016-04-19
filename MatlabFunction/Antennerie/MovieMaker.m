@@ -38,7 +38,7 @@ for ii=begining:ending
     grid_mat=reshape(real(h_sig(ii,:)),size(Antenna.X_mat));
     %        pcolor(Antenna.y,Antenna.x,grid_mat); % plot of the frame
     surf(Antenna.y,Antenna.x,grid_mat); % plot of the frame
-    title(ii/ct.Fs2_sca)
+    title(ii)
     caxis(cax)
     shading interp
 %     axis equal
