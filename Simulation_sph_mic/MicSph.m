@@ -71,7 +71,7 @@ for jj=1:ct.N_mic
     Pressure(:,jj)=var.pressure;
     clc;disp(jj);
 end
-var.pressure(1,:)=0;% does it right ?
+var.pressure(1,:)=0;% does it rightj ?
 
 %% Encodage 
 ct.M=15;
