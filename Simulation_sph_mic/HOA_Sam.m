@@ -12,7 +12,7 @@ kk=1;
 %% Choix de la source (Ae^j(wt-kx))
 
 A=1;
-f=1000; % frequency of the wave
+f=000; % frequency of the wave
 w=2*pi*f;
 c=340;k=w/c; % sound speed, wave number
 
