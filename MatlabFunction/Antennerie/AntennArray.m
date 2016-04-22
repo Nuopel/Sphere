@@ -13,7 +13,7 @@ Antenna.coord_vect = [reshape(Antenna.X_mat,1,numel(Antenna.X_mat));reshape(Ante
 
 Antenna.Rmicro = sqrt(Antenna.coord_vect(1,:).^2+Antenna.coord_vect(2,:).^2);
 [Antenna.Rmicro_sort, Antenna.index ]= sort(Antenna.Rmicro);
-for ii=1:N.N_mic
+for ii=1:nbrx_sca*nbry_sca;
     Antenna.Rmicro_sc(ii) = Antenna.Rmicro_sort(ii);
     Antenna.index_sc(ii) = Antenna.index(ii);
     if mod(ii,2) == 0
