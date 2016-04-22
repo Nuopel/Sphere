@@ -5,6 +5,6 @@ function [ a ] = Hankel_sph_1_deriv( m,kind,kr)
 % kr = evaluated value 
 % http://mathworld.wolfram.com/SphericalHankelFunctionoftheFirstKind.html
 
-a=0.5*(Hankel_sph(m-1,kind,kr)-(Hankel_sph(m,kind,kr)+kr.*Hankel_sph(m+1,kind,kr))./kr);
-
+% a=0.5*(Hankel_sph(m-1,kind,kr)-(Hankel_sph(m,kind,kr)+kr.*Hankel_sph(m+1,kind,kr))./kr);
+a=Hankel_sph(m-1,kind,kr)-(m+1)/kr*Hankel_sph(m,kind,kr);
 end
