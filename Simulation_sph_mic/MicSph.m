@@ -26,7 +26,7 @@ var.nbr_m=(2.*var.m_vect)+1;
 
 %% Choix de la source (Ae^j(wt-kx))
 [ source.sweep, t, ct, N ] = GenSweep(20, 20000, 4, ct ) ;
-k = 2*pi*500/340;
+k = 2*pi*600/340;
 N.N_sweep=1;
 %% POSITION DE LA SOURCE : select a speaker
 speaker = 12 ;
@@ -59,13 +59,13 @@ for jj=1:ct.N_mic
     
     % var.pressure = zeros(N.N_sweep,ct.M_th) ;------» tic toc method choice
     for ii=0:ct.M_th
-        var.sum_Bmn_Ymn = sum(var.Bmn_Ymn(1:var.m_sum_vect(ii+1),:),1); 
+        var.sum_Bmn_Ymn = sum(var.Bmn_Ymn(1:var.m_sum_vect(ii+1),:),1) ; 
         var.Hprim = 1i^(var.m_vect(ii+1)-1)./((k.*ct.r_micsph).^2.*Hankel_sph_1_deriv(var.m_vect(ii+1),ct.hankel_order,k.*ct.r_micsph)) ;
 
         if ii==0;
             var.pressure = var.sum_Bmn_Ymn'.*var.Hprim ;
         else
-            var.pressure=sum([var.pressure, var.sum_Bmn_Ymn'.*var.Hprim],2);
+            var.pressure=sum([var.pressure, var.sum_Bmn_Ymn'.*var.Hprim],2)
         end
     end
     Pressure(:,jj)=var.pressure;
@@ -77,11 +77,11 @@ end
 ct.M=5;
 var.Hprim=zeros(N.N_sweep,ct.M);
 for ii=0:ct.M
-        var.Hprim(:,ii+1) = 1i^(var.m_vect(ii+1)-1)./((k.*ct.r_micsph).^2.*Hankel_sph_1_deriv(var.m_vect(ii+1),ct.hankel_order,k.*ct.r_micsph)) ;
+        var.Hprim(:,(ii)^2+1:(ii+1)^2) = repmat(1i^(var.m_vect(ii+1)-1)./((k.*ct.r_micsph).^2.*Hankel_sph_1_deriv(var.m_vect(ii+1),ct.hankel_order,k.*ct.r_micsph)),1,var.nbr_m(ii+1)) ;
 end
 
- Bmn.recons = zeros(ct.M+1,N.N_sweep) ;
- Ymn.Micrecons = Ymn.Mic(1:ct.M+1,1:ct.N_mic) ;
+ Bmn.recons = zeros(var.m_sum_vect(ct.M+1),N.N_sweep) ;
+ Ymn.Micrecons = Ymn.Mic(1:var.m_sum_vect(ct.M+1),1:ct.N_mic) ;
 for ii=1:N.N_sweep
    Bmn.recons(:,ii) = diag(1./var.Hprim(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(ii,:)' ;
    disp(ii) ;
