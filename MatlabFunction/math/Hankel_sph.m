@@ -5,6 +5,6 @@ function [ a ] = Hankel_sph( m,kind,kr)
 % kr = evaluated value 
 % http://mathworld.wolfram.com/SphericalHankelFunctionoftheFirstKind.html
 
-a=besselh(m+0.5,kind,kr).*sqrt(pi./(2.*kr));
+a=besselh(m+0.5,kind,kr).*sqrt(pi./(2.*kr)) ;
 
 end

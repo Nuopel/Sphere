@@ -25,17 +25,17 @@ pos_phi_deg=0; pos_phi_rad=deg2rad(pos_phi_deg); % Phi angle of the source
 
 %% SET UP
 N_hp_sca=50; %lebedev grid 6,14,26,38,50...
-for M= [ 5 ]
+for M= [ 7 ]
     kk=kk+1;
-    r_hp_sca =7; % rayon du cercle
+    r_hp_sca =1.07; % rayon du cercle
     [ x, y, z, w ] = ld_by_order(N_hp_sca);
     pos_hp_vect=[ x, y, z]*r_hp_sca;
     
     
     %% Decomposition en harmonique spherique
-    Hanke_k_sca=1;
+    Hanke_k_sca=2;
     for ii=0:M
-        Fm((ii)^2+1:(ii+1)^2)=-HFm(ii,Hanke_k_sca,k,rs);
+        Fm((ii)^2+1:(ii+1)^2)=FM_sph(ii,Hanke_k_sca,k,rs);
     end
     Ymn_mat=sph_harmonic( M,1,pos_theta_rad,pos_phi_rad);
     Bmn_mat=Ymn_mat.*Fm';
@@ -49,7 +49,7 @@ for M= [ 5 ]
     %%  Decodage signal hp "C.S=Bmn"
     for ii=0:M
         
-        Fm1_vect((ii)^2+1:(ii+1)^2,1)=1./HFm(ii,2,k,r_hp_sca);
+        Fm1_vect((ii)^2+1:(ii+1)^2,1)=1./HFm(ii,1,k,r_hp_sca);
     end
     
     Fm1_mat= diag(Fm1_vect);

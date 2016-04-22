@@ -8,9 +8,9 @@ clear variables; close all;clc
 ct.r_hp_sca = 1.07 ;%rayon de la sphere
 ct.r_micsph = 0.2 ;
 ct.hankel_order = 2;
-ct.M_th = 4;
+ct.M_th =2;
 ct.nbr_M_th=(ct.M_th+1).^1;
-ct.M=3;
+ct.M=5;
 ct.Fs=48000;
 ct.c_air=340;
 
@@ -27,7 +27,7 @@ var.nbr_m=(2.*var.m_vect)+1;
 k = 2*pi*500/340;
 N.N_sweep=1;
 %% POSITION DE LA SOURCE : select a speaker
-speaker = 12 ;
+speaker = 16 ;
 source.x = ArraySpeaker.x(speaker) ;
 source.y = ArraySpeaker.y(speaker) ;
 source.z = ArraySpeaker.z(speaker) ;
@@ -35,24 +35,24 @@ source.z = ArraySpeaker.z(speaker) ;
 clear speaker ;
 
 %% creation antenne
-ct.pas_m = 2.5*2.54e-2; % pas de l'antenne
+ct.pas_m = 2.54e-2; % pas de l'antenne
 N.nbrx_sca =50; % nombre de micros par ligne
-N.nbry_sca = 50; % nombre de micros par ligne
+N.nbry_sca = 49; % nombre de micros par ligne
 ct.N_mic=N.nbrx_sca*N.nbry_sca;
 [ Antenna ] = AntennArray( ct.pas_m,N.nbrx_sca,N.nbry_sca);
-% contruction antenne 2.5 po , 8 mic
 
 
 %% Encoding source
 % Decomposition en harmonique spherique
 
 for ii = 0:ct.M_th
-    Fm(:,(ii)^2+1:(ii+1)^2) = repmat(-HFm( ii, 2, k, ct.r_hp_sca ),1,var.nbr_m(ii+1)) ;
+    Fm(:,(ii)^2+1:(ii+1)^2) = repmat(FM_sph( ii, 1, k, ct.r_hp_sca ),1,var.nbr_m(ii+1)) ;
 end
 % Fm(1,:)=0;% does it right ?
 Ymn.source = sph_harmonic( ct.M_th,1,source.theta,source.phi ) ;
 Bmn.source = bsxfun(@times,Fm,Ymn.source') ;
-
+a = load('B2.mat');   
+Bmn.source2= a.Expression1';
 
 %% Fabrication Matrice "C" spherical harmonic
 
@@ -70,8 +70,8 @@ for jj=1:ct.N_mic
     % var.pressure = zeros(N.N_sweep,ct.M_th) ;------» tic toc method choice
     for ii=0:ct.M_th
         var.sum_Bmn_Ymn = sum(var.Bmn_Ymn(1:var.m_sum_vect(ii+1),:),1) ;
-        var.Hprim = 1i^(var.m_vect(ii+1))*(Bessel_sph(var.m_vect(ii+1),k.*Antenna.Rmicro(ii+1))-Bessel_sph_1_deriv(var.m_vect(ii+1),k.*ct.r_micsph)/Hankel_sph_1_deriv(var.m_vect(ii+1),ct.hankel_order,k.*ct.r_micsph)*Hankel_sph(var.m_vect(ii+1),ct.hankel_order,k.*Antenna.Rmicro(ii+1)));
-        var.Bessel_int = 1i^(var.m_vect(ii+1))*(Bessel_sph(var.m_vect(ii+1),k.*Antenna.Rmicro(ii+1)));
+        var.Hprim = 1i^(ii)*(Bessel_sph(ii,k.*Antenna.Rmicro(ii+1))-Bessel_sph_1_deriv(ii,k.*ct.r_micsph)/Hankel_sph_1_deriv(ii,ct.hankel_order,k.*ct.r_micsph)*Hankel_sph(ii,ct.hankel_order,k.*Antenna.Rmicro(ii+1)));
+        var.Bessel_int = 1i^(ii)*(Bessel_sph(ii,k.*Antenna.Rmicro(ii+1)));
         if ii==0;
             var.pressure_diffr = var.sum_Bmn_Ymn'.*var.Hprim ;
             var.pressure_direc = var.sum_Bmn_Ymn'.*var.Bessel_int ;
@@ -92,5 +92,5 @@ end
 
 Pmes_mat = reshape(Pressure.direct	,size(Antenna.X_mat));
 figure
-pcolor(Antenna.x,Antenna.y,real(Pmes_mat));
+pcolor(Antenna.y,Antenna.x,real(Pmes_mat));
 shading interp
