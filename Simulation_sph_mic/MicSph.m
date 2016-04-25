@@ -4,12 +4,12 @@ clear variables; close all;clc
 % recording a monopole source positioned on the
 % ambisonics set up
 
-%% Define the constant
+%% Define constants
 ct.r_hp_sca = 1.07 ;%rayon de la sphere
-ct.r_micsph = 0.1;
+ct.r_micsph = 0.07;
 ct.hankel_order = 2;
-ct.M_th = 3;
-ct.M=1;
+ct.M_th = 25;
+ct.M=5;
 ct.nbr_M_th=(ct.M_th+1).^1;
 ct.Fs=48000;
 ct.c_air=340;
@@ -17,6 +17,12 @@ ct.c_air=340;
 var.m_vect=0:ct.M_th;
 var.m_sum_vect=(var.m_vect+1).^2;
 var.nbr_m=(2.*var.m_vect)+1;
+
+%% Choix de la source (Ae^j(wt-kx))
+[ source.sweep, t, ct, N ] = GenSweep(20, 20000, 4, ct ) ;
+ct.k = 2*pi*1500/340;
+N.N_sweep=1;
+
 %% Define ambisonics set up
 [ ArraySpeaker, ct.N_speaker ] = CreateSpeakerSystem(ct.r_hp_sca);% create the sphere set up, sort in struc Array
 
@@ -24,123 +30,42 @@ var.nbr_m=(2.*var.m_vect)+1;
 %% Define Spherical microphone set up (same as speaker but smaller)
 [ Sphmic, ct.N_mic ] = CreateSpeakerSystem(ct.r_micsph);% create the sphere set up, sort in struc Array
 
-%% Choix de la source (Ae^j(wt-kx))
-[ source.sweep, t, ct, N ] = GenSweep(20, 20000, 4, ct ) ;
-k = 2*pi*500/340;
-N.N_sweep=1;
+
 %% POSITION DE LA SOURCE : select a speaker
-speaker = 12 ;
-source.x = ArraySpeaker.x(speaker) ;
-source.y = ArraySpeaker.y(speaker) ;
-source.z = ArraySpeaker.z(speaker) ;
-[ source.theta, source.phi, source.r ] = cart2sph(source.x, source.y, source.z) ;
-clear speaker ;
-%% Propagate  spherical microphone
-% Decomposition en harmonique spherique
-% Decomposition en harmonique spherique
+speaker = 12;
+source.x = ArraySpeaker.x(speaker) ; source.y = -ArraySpeaker.y(speaker) ; source.z = ArraySpeaker.z(speaker) ;
+[ source.theta, source.phi, source.r ] = cart2sph(source.x, source.y, source.z) ; clear speaker ;
 
-for ii = 0:ct.M_th
-    Fm(:,(ii)^2+1:(ii+1)^2) = repmat(FM_sph( ii, 1, k, ct.r_hp_sca ),1,var.nbr_m(ii+1)) ;
-end
-% Fm(1,:)=0;% does it right ?
-Ymn.source = sph_harmonic( ct.M_th,1,source.theta,source.phi ) ;
-Bmn.source = bsxfun(@times,Fm,permute(Ymn.source,[2 1])) ;
+%% Encoding signal on Bmn coefficient
+
+Bmn.source = Bmn_monopole_encodage(ct.M_th,source,ct,var ) ;
 
 
-%% Fabrication Matrice "C" spherical harmonic
-[ Sphmic.theta, Sphmic.phi, Sphmic.r ] = cart2sph( Sphmic.x, Sphmic.y, Sphmic.z ) ;
-% conversion  to pherical coord possible problem with ref of cart2sph
-Ymn.Mic = sph_harmonic( ct.M_th, ct.N_mic, Sphmic.theta, Sphmic.phi ) ;
-% % --> calculate Bmn.*Ymn
-% % --> change  hfm pour Hankel spherique
-Pressure.difract=zeros(N.N_sweep,ct.N_mic);
-Pressure.direct=zeros(N.N_sweep,ct.N_mic);
+%% Decoding to calculate pressure on the spherical microphone
 
-for jj=1:ct.N_mic
-    var.Bmn_Ymn = bsxfun(@times,permute(Bmn.source,[2, 1, 3]),Ymn.Mic(:,jj)) ;
-    
-    % var.pressure = zeros(N.N_sweep,ct.M_th) ;------Â» tic toc method choice
-    for ii=0:ct.M_th
-        var.sum_Bmn_Ymn = sum(var.Bmn_Ymn(1:var.m_sum_vect(ii+1),:),1) ;
-%         var.Hprim = 1i^(ii)*(Bessel_sph(ii,k.*ct.r_micsph)-Bessel_sph_1_deriv(ii,k.*ct.r_micsph)/Hankel_sph_1_deriv(ii,ct.hankel_order,k.*ct.r_micsph)*Hankel_sph(ii,ct.hankel_order,k.*ct.r_micsph));
-        var.Hprim = 1i^(ii-1)/((k.*ct.r_micsph).^2*Hankel_sph_1_deriv(ii,ct.hankel_order,k.*ct.r_micsph)) ;%---> put out loop
-        var.Bessel_int = 1i^(ii)*(Bessel_sph(ii,k.*ct.r_micsph)) ;
-        if ii==0;
-            var.pressure_diffr = permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Hprim ;
-            var.pressure_direc = permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int ;
+[ Sphmic,Pressure ] = Decoding_pressure_microphone( Bmn,Sphmic,N,ct,var );
 
-        else
-            var.pressure_diffr = sum([var.pressure_diffr, permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Hprim],2) ;
-            var.pressure_direc = sum([var.pressure_direc, permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int],2) ;
+%% Encoding from microphone pressure
+Bmn.recons = Bmn_encoding_sph( Pressure,Sphmic,ct,N,var );
 
-        end
-    end
-    Pressure.difract(:,jj)=var.pressure_diffr;
-    Pressure.direct(:,jj)=var.pressure_direc;
-
-    
-end
-% var.pressure(1,:)=0;% does it rightj ?
-
-%% Encodage 
-var.Hprim2=zeros(N.N_sweep,ct.M);
-for ii=0:ct.M
-        var.Hprim2(:,(ii)^2+1:(ii+1)^2) = repmat(1i^(ii-1)./((k.*ct.r_micsph).^2.*Hankel_sph_1_deriv(ii,ct.hankel_order,k.*ct.r_micsph)),1,var.nbr_m(ii+1)) ;
-end
-
- Bmn.recons = zeros(var.m_sum_vect(ct.M+1),N.N_sweep) ;
- Ymn.Micrecons = Ymn.Mic(1:var.m_sum_vect(ct.M+1),1:ct.N_mic) ;
-for ii=1:N.N_sweep
-   Bmn.recons(:,ii) = diag(1./var.Hprim2(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*permute(Pressure.difract(ii,:),[2 1]) ;
-   disp(ii) ;
-end
-% ct=rmfield(ct,'Fs2_sca');
-
+%% affichage data
+Bmn.source_tronc = Bmn_monopole_encodage(ct.M,source,ct,var ) ;
+Pressure.p_recons = Pressure_map_SphMic(Bmn.recons,Sphmic,ct,N,var);title('Reconstruction sphere mic')
+Pressure.p_target = Pressure_map_SphMic(permute(Bmn.source_tronc,[2 1]),Sphmic,ct,N,var);title('Reconstruction troncation')
+[field ,norm_e ]=erreur_n(Pressure.p_target,Pressure.p_recons);
+Pressure_map_(field,ct,1)
 %%
-% %% creation antenne
-% ct.pas_m = 2.54e-2; % pas de l'antenne
-% N.nbrx_sca =50; % nombre de micros par ligne
-% N.nbry_sca = 49; % nombre de micros par ligne
-% ct.N_mic=N.nbrx_sca*N.nbry_sca;
-% [ Antenna ] = AntennArray( ct.pas_m,N.nbrx_sca,N.nbry_sca);
-% 
-% %% Fabrication Matrice "C" spherical harmonic
-% 
-% Bmn.source=permute(Bmn.recons,[2 1]);
-% ct.M_th=5
-% [ Sphmic.theta, Sphmic.phi, Sphmic.r ] = cart2sph( Antenna.coord_vect(1,:)', Antenna.coord_vect(2,:)',zeros(length(Antenna.coord_vect(2,:)),1) ) ;
-% % conversion  to pherical coord possible problem with ref of cart2sph
-% Ymn.Mic = sph_harmonic( ct.M_th, ct.N_mic, Sphmic.theta, Sphmic.phi ) ;
-% % % --> calculate Bmn.*Ymn
-% % % --> change  hfm pour Hankel spherique
-% Pressure.difract=zeros(N.N_sweep,ct.N_mic);
-% Pressure.direct=zeros(N.N_sweep,ct.N_mic);
-% 
-% for jj=1:ct.N_mic
-%     var.Bmn_Ymn = bsxfun(@times,permute(Bmn.source,[2, 1, 3]),Ymn.Mic(:,jj)) ;
-%     
-%     % var.pressure = zeros(N.N_sweep,ct.M_th) ;------» tic toc method choice
-%     for ii=0:ct.M_th
-%         var.sum_Bmn_Ymn = sum(var.Bmn_Ymn(1:var.m_sum_vect(ii+1),:),1) ;
-%         var.Bessel_int = 1i^(ii)*(Bessel_sph(ii,k.*Antenna.Rmicro(jj)));
-%         if ii==0;
-%             var.pressure_direc = permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int ;
-% 
-%         else
-%             var.pressure_direc = sum([var.pressure_direc, permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int],2) ;
-% 
-%         end
+Bmn.source_tronc=permute(Bmn.source_tronc,[2 1]);
+[ erreur ,norm_e ]=erreur_n(Bmn.source_tronc, Bmn.recons)
+% ct=rmfield(ct,'Fs2_sca');
+%%
+a=load('psca.mat');
+a.Expression1
+% ct.k=2*pi*[1:20000]./340;
+% for ii=0:5
+%     for jj=1:length(ct.k)
+%         a(jj)=((ct.k(jj).*ct.r_micsph).^2*Hankel_sph_1_deriv(ii,ct.hankel_order,ct.k(jj).*ct.r_micsph));
 %     end
-%     Pressure.direct(:,jj)=var.pressure_direc;
+%             semilogx(db(a));hold on;
 % 
-%     
 % end
-% % var.pressure(1,:)=0;% does it r
-% %% Reconstruction
-% 
-% Pmes_mat = reshape(Pressure.direct	,size(Antenna.X_mat));
-% figure
-% pcolor(Antenna.y,Antenna.x,real(Pmes_mat));
-% cax=caxis;
-% shading interp
-Bmn.source=permute(Bmn.source,[2 1]);
