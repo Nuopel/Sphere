@@ -5,10 +5,11 @@ clear variables; close all;clc
 % ambisonics set up
 
 %% Define the constant
-ct.r_hp_sca = 1.07 ; % rayon de la sphere
+ct.r_hp_sca = 1.07 ;%rayon de la sphere
 ct.r_micsph = 0.2 ;
-ct.hankel_order = 2;
-ct.M_th =10;
+ct.hankel_order = 0;
+ct.M_th =9;
+ct.M=2;
 ct.nbr_M_th=(ct.M_th+1).^1;
 
 ct.Fs=48000;
@@ -63,40 +64,23 @@ Ymn.Mic = sph_harmonic( ct.M_th, ct.N_mic, Sphmic.theta, Sphmic.phi ) ;
 Pressure.difract=zeros(N.N_sweep,ct.N_mic);
 Pressure.direct=zeros(N.N_sweep,ct.N_mic);
 
-for jj=1:ct.N_mic
-    var.Bmn_Ymn = bsxfun(@times,permute(Bmn.source,[2, 1, 3]),Ymn.Mic(:,jj)) ;
-    
-    % var.pressure = zeros(N.N_sweep,ct.M_th) ;------» tic toc method choice
-    for ii=0:ct.M_th
-        var.sum_Bmn_Ymn = sum(var.Bmn_Ymn(1:var.m_sum_vect(ii+1),:),1) ;
-        var.Hprim = 1i^(ii)*(Bessel_sph(ii,k.*Antenna.Rmicro(jj))-Bessel_sph_1_deriv(ii,k.*ct.r_micsph)/Hankel_sph_1_deriv(ii,ct.hankel_order,k.*ct.r_micsph)*Hankel_sph(ii,ct.hankel_order,k.*Antenna.Rmicro(jj)));
-        var.Bessel_int = 1i^(ii)*(Bessel_sph(ii,k.*Antenna.Rmicro(jj)));
-        if ii==0;
-            var.pressure_diffr = permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Hprim ;
-            var.pressure_direc = permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int ;
-
-        else
-            var.pressure_diffr = sum([var.pressure_diffr, permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Hprim],2) ;
-            var.pressure_direc = sum([var.pressure_direc, permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int],2) ;
-
-        end
-    end
-    Pressure.difract(:,jj)=var.pressure_diffr;
-    Pressure.direct(:,jj)=var.pressure_direc;
-
-    
+%%M=0
+for ii=1:ct.N_mic
+p_dir(ii,1)=1i^0*Bessel_sph(0,k*Antenna.Rmicro(ii))*Bmn.source(1)*Ymn.Mic(1,ii);
+p_dir(ii,2)=1i^1*Bessel_sph(1,k*Antenna.Rmicro(ii))*sum(bsxfun(@times,permute(Bmn.source(1,1:var.m_sum_vect(2)),[2 1 3]),Ymn.Mic(1:var.m_sum_vect(2),ii))); 
+p_dir(ii,3)=1i^2*Bessel_sph(2,k*Antenna.Rmicro(ii))*sum(bsxfun(@times,permute(Bmn.source(1,1:var.m_sum_vect(3)),[2 1 3]),Ymn.Mic(1:var.m_sum_vect(3),ii)));
+% p_dir(ii,4)=1i^3*Bessel_sph(3,k*Antenna.Rmicro(ii))*sum(bsxfun(@times,permute(Bmn.source(1,1:var.m_sum_vect(4)),[2 1 3]),Ymn.Mic(1:var.m_sum_vect(4),ii)));
+% p_dir(ii,5)=1i^4*Bessel_sph(4,k*Antenna.Rmicro(ii))*sum(bsxfun(@times,permute(Bmn.source(1,1:var.m_sum_vect(5)),[2 1 3]),Ymn.Mic(1:var.m_sum_vect(5),ii)));
+% p_dir(ii,6)=1i^5*Bessel_sph(5,k*Antenna.Rmicro(ii))*sum(bsxfun(@times,permute(Bmn.source(1,1:var.m_sum_vect(6)),[2 1 3]),Ymn.Mic(1:var.m_sum_vect(6),ii)));
+% p_dir(ii,7)=1i^6*Bessel_sph(6,k*Antenna.Rmicro(ii))*sum(bsxfun(@times,permute(Bmn.source(1,1:var.m_sum_vect(7)),[2 1 3]),Ymn.Mic(1:var.m_sum_vect(7),ii)));
+% p_dir(ii,8)=1i^7*Bessel_sph(7,k*Antenna.Rmicro(ii))*sum(bsxfun(@times,permute(Bmn.source(1,1:var.m_sum_vect(8)),[2 1 3]),Ymn.Mic(1:var.m_sum_vect(8),ii)));
+% p_dir(ii,9)=1i^7*Bessel_sph(8,k*Antenna.Rmicro(ii))*sum(bsxfun(@times,permute(Bmn.source(1,1:var.m_sum_vect(9)),[2 1 3]),Ymn.Mic(1:var.m_sum_vect(9),ii)));
+% p_dir(ii,10)=1i^7*Bessel_sph(9,k*Antenna.Rmicro(ii))*sum(bsxfun(@times,permute(Bmn.source(1,1:var.m_sum_vect(10)),[2 1 3]),Ymn.Mic(1:var.m_sum_vect(10),ii)));
 end
-% var.pressure(1,:)=0;% does it r
+p_dir=sum(p_dir,2);
 %% Reconstruction
 
-Pmes_mat = reshape(Pressure.direct	,size(Antenna.X_mat));
+Pmes_mat = reshape(p_dir,size(Antenna.X_mat));
 figure
 pcolor(Antenna.y,Antenna.x,real(Pmes_mat));
-cax=caxis;
-shading interp
-
-Pmes_mat = reshape(Pressure.difract	,size(Antenna.X_mat));
-figure
-pcolor(Antenna.y,Antenna.x,real(Pmes_mat));
-caxis(cax);
 shading interp
