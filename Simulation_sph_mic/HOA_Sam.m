@@ -12,20 +12,20 @@ kk=1;
 %% Choix de la source (Ae^j(wt-kx))
 
 A=1;
-f=500; % frequency of the wave
+f=1700; % frequency of the wave
 w=2*pi*f;
 c=340;k=w/c; % sound speed, wave number
 
 %% POSITION DE LA SOURCE
-rs=1.07; % distance de la source
-pos_theta_deg=-90; pos_theta_rad=deg2rad(pos_theta_deg); % Theta angle of the source
+rs=3.07; % distance de la source
+pos_theta_deg=-45; pos_theta_rad=deg2rad(pos_theta_deg); % Theta angle of the source
 pos_phi_deg=0; pos_phi_rad=deg2rad(pos_phi_deg); % Phi angle of the source
 
 [x_s,y_s,z_s] = sph2cart(pos_theta_rad,pos_phi_rad,rs);
 
 %% SET UP
 N_hp_sca=50; %lebedev grid 6,14,26,38,50...
-for M= [ 7 ]
+for M= [3 4 5 ]
     kk=kk+1;
     r_hp_sca =1.07; % rayon du cercle
     [ x, y, z, w ] = ld_by_order(N_hp_sca);
@@ -33,7 +33,7 @@ for M= [ 7 ]
     
     
     %% Decomposition en harmonique spherique
-    Hanke_k_sca=2;
+    Hanke_k_sca=1;
     for ii=0:M
         Fm((ii)^2+1:(ii+1)^2)=FM_sph(ii,Hanke_k_sca,k,rs);
     end
@@ -49,7 +49,7 @@ for M= [ 7 ]
     %%  Decodage signal hp "C.S=Bmn"
     for ii=0:M
         
-        Fm1_vect((ii)^2+1:(ii+1)^2,1)=1./HFm(ii,1,k,r_hp_sca);
+        Fm1_vect((ii)^2+1:(ii+1)^2,1)=1./HFm(ii,2,k,r_hp_sca);
     end
     
     Fm1_mat= diag(Fm1_vect);
@@ -58,7 +58,7 @@ for M= [ 7 ]
     S2=w*Ymn_n3d_mat'*Fm1_mat*Bmn_mat; % decodage spherical wave
     
     %% Antenne de mesure
-    pasx_m = 0.01; % pas de l'antenne
+    pasx_m = 0.006; % pas de l'antenne
     nbm_sca =200; % nombre de micros par ligne
     x1_vec=-(pasx_m*(nbm_sca-1))/2:pasx_m:(pasx_m*(nbm_sca-1))/2; % coordonnees des micros
     [X_mat,Y_mat]=meshgrid(x1_vec,x1_vec);% create 2 matrix of coordinate associated to the grid
