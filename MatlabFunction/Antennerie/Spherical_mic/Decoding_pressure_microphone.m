@@ -25,17 +25,17 @@ for jj=1:ct.N_mic
         var.Bessel_int = 1i^(ii)*(Bessel_sph(ii,ct.k.*ct.r_micsph)) ;
         if ii==0;
             var.pressure_diffr = permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Hprim ;
-            var.pressure_direc = permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int ;
+%             var.pressure_direc = permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int ;
             test3=var.pressure_diffr;
         else
             var.pressure_diffr = sum([var.pressure_diffr, permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Hprim],2) ;
             test3(ii+1)=permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Hprim;
-            var.pressure_direc = sum([var.pressure_direc, permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int],2) ;
+%             var.pressure_direc = sum([var.pressure_direc, permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int],2) ;
 
         end
     end
     Pressure.difract(:,jj)=var.pressure_diffr;
-    Pressure.direct(:,jj)=var.pressure_direc;
+%     Pressure.direct(:,jj)=var.pressure_direc;
 
     
 end

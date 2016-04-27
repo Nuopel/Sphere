@@ -2,7 +2,7 @@ function [ Pressure ] = Pressure_map_SphMic(M,Bmn,ct,N,var  )
 % Calculate from Bmn coefficient the pressure map 
 
 %% creation antenne
-ct.pas_m = 2e-2; % pas de l'antenne
+ct.pas_m = 3e-2; % pas de l'antenne
 N.nbrx_sca =50; % nombre de micros par ligne
 N.nbry_sca = 50; % nombre de micros par ligne
 ct.N_mic=N.nbrx_sca*N.nbry_sca;
