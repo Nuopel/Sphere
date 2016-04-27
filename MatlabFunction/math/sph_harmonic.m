@@ -7,6 +7,7 @@ terme_cos_mat=zeros(M+1,N_hp_sca);terme_sin_mat=zeros(M,N_hp_sca);% declaration
 for ii=1:M+1
     
     terme_cos_mat(ii,:) = cos((ii-1)*theta_hp2_vect)';
+%     Pmn_mat=bsxfun(@times,(-1).^(-abs(0:ii-1)).',legendre(ii-1,sin(phi_hp2_vect)));
     Pmn_mat=legendre(ii-1,sin(phi_hp2_vect));
     
     if ii<2
