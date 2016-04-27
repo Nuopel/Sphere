@@ -44,7 +44,8 @@ Bmn.source = Bmn_monopole_encodage(ct.M_th,source,ct,var ) ;
 %% Decoding to calculate pressure on the spherical microphone
 
 [ Sphmic,Pressure ] = Decoding_pressure_microphone( Bmn,Sphmic,N,ct,var );
-
+% a=load('psca.mat');
+% Pressure.difract=a.Expression1.';
 %% Encoding from microphone pressure
 Bmn.recons = Bmn_encoding_sph( Pressure,Sphmic,ct,N,var );
 
