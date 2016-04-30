@@ -7,7 +7,11 @@ function [ ArraySpeaker, N ] = CreateSpeakerSystem(r_hp_sca)
 % - Set the sphere radius at r_hp_sca
 % - Use CreateSpeakerStructure function
 
+<<<<<<< HEAD
 imp=load('data/coords.mat');imp.coords(:,1:3)=imp.coords(:,1:3)*r_hp_sca;%imp.coords(:,2)=-imp.coords(:,2) ;
+=======
+imp=load('data/coords.mat');imp.coords(:,1:3)=imp.coords(:,1:3)*r_hp_sca;imp.coords(:,2)=imp.coords(:,2) ;
+>>>>>>> refs/remotes/origin/master
 % A=rotz(45*pi/180) ;
 % for ii=1:length(imp.coords)
 % imp.coords(ii,1:3)=imp.coords(ii,1:3)*A' ;

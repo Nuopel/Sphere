@@ -6,7 +6,7 @@ clear variables; close all;clc
 
 %% Define constants
 ct.r_hp_sca = 1.07 ;%rayon de la sphere
-ct.r_micsph = 0.07;
+ct.r_micsph = 0.02;
 ct.hankel_order =2;
 ct.M_th=20;
 ct.M=5;
@@ -20,7 +20,7 @@ var.nbr_m=(2.*var.m_vect)+1;
 
 %% Choix de la source (Ae^j(wt-kx))
 [ source.sweep, t, ct, N ] = GenSweep(20, 20000, 4, ct ) ;
-ct.k = 2*pi*1500/340;
+ct.k = 2*pi*10000/340;
 N.N_sweep=1;
 
 %% Define ambisonics set up
@@ -33,7 +33,7 @@ N.N_sweep=1;
 
 %% POSITION DE LA SOURCE : select a speaker
 speaker = 12;
-source.x = ArraySpeaker.x(speaker) ; source.y = ArraySpeaker.y(speaker) ; source.z = ArraySpeaker.z(speaker) ;
+source.x = 0 ; source.y = 1.07; source.z = 0 ;
 [ source.theta, source.phi, source.r ] = cart2sph(source.x, source.y, source.z) ; clear speaker ;
 
 %% Encoding signal on Bmn coefficient
