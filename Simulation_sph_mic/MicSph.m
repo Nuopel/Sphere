@@ -57,7 +57,7 @@ Pressure.monopole = Pressure_map_SphMic(ct.M_th,Bmn.source.',ct,N,var);title('Re
 
 [field ,norm_e ]=erreur_n(Pressure.p_target,Pressure.p_recons);
 Pressure_map_(field,ct,1)
-
+%test
 
 %%
 Bmn.source_tronc=permute(Bmn.source_tronc,[2 1]);
