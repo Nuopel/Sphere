@@ -24,6 +24,8 @@ if isfield(data, 'sc_simu')==0
     ct.pos=12;
     [data.hp_simu_reel,ct.Fs2_sca]=audioread('../../Data/source_reelle_virt.w64');data.hp_simu_reel=[data.hp_simu_reel ;zeros(1,1)];
     [data.sc_simu_reel ,H_simu_reel,ArraySpeaker,N,ct,t] = simu_source_reelle( data.hp_simu_reel(1:length(data.hp_simu)/10,:), data.sweep(1:length(data.hp_simu)/10,:),Antenna,ct,N);
+    H_simu_reel.h_sig=H_simu_reel.h_sig/1.07;H_simu_reel.h_sig_fft=H_simu_reel.h_sig_fft/1.07;
+
 end
 
 if ct.Fs2_sca~=ct.Fs_sca
@@ -118,7 +120,7 @@ cax=caxis;
 shading interp
 view([0 90]);xlim([1 8]);xlabel('Microphone');ylabel('Time in sample ');
 set(gca,'XTick',1:2:8);set(gca,'XTickLabel',25:2:32);
-title('Simulated real source')
+title('Simulated target source')
 
 
 subplot(122)
@@ -133,7 +135,7 @@ figure(6);
 subplot(121)
 surf(H_reel.h_sig(1:1200,25:32));
 shading interp
-title('Real source')
+title('target source')
 view([0 90]);xlim([1 8]);xlabel('Microphone');ylabel('Time in sample ');
 set(gca,'XTick',1:2:8);set(gca,'XTickLabel',25:2:32);
 caxis(cax)
@@ -164,13 +166,14 @@ for ii=1:length(text.freq)
     % grid_mat_virt=reshape(grid_vect_virt,size(Antenna.X_mat));
 end
 erreur.value=sqrt(abs(erreur.grid_vect_reel-erreur.grid_vect_virt).^2./abs(erreur.grid_vect_reel).^2)*100;
+erreur.test=1./abs(erreur.grid_vect_reel).^2*100;
 erreur.value_simu=sqrt(abs(erreur.grid_vect_simu_reel-erreur.grid_vect_simu_virt).^2./abs(erreur.grid_vect_simu_reel).^2)*100;
 
 erreur.value_trans=sqrt(abs(erreur.grid_vect_simu_virt-erreur.grid_vect_virt).^2./abs(erreur.grid_vect_simu_virt).^2)*100;
 
 % MovieMaker_double_erreur( real(erreur.grid_vect_reel),real(erreur.grid_vect_virt),erreur.value,Antenna,1,length(text.freq) ,ct,text)
 % MovieMaker_double_erreur( real(erreur.grid_vect_simu_reel),real(erreur.grid_vect_simu_virt),erreur.value_simu,Antenna,800,length(text.freq) ,ct,text)
-% text.a='Simu ambisonics sc';text.b='Virtual source ';
+% text.a='Simu ambisonics sc';text.b='Meas target ';
 % MovieMaker_double_erreur( real(erreur.grid_vect_simu_virt),real(erreur.grid_vect_virt),erreur.value_trans,Antenna,1,length(text.freq) ,ct,text)
 
 %% Erreur analysis
@@ -205,7 +208,7 @@ legend('Meas','Simu')
 figure(9)
 subplot(311)
 plot(t.Fsweep_avg,20*log10([H_reel.h_sig_fft(:,1) H_virt.h_sig_fft(:,1)]));xlim([20 500])
-legend('Meas real','Meas ambisonics')
+legend('Meas target','Meas ambisonics')
 subplot(312)
 plot(t.Fsweep_avg,angle([H_reel.h_sig_fft(:,1) H_virt.h_sig_fft(:,1)]));xlim([20 500])
 subplot(313)
@@ -215,7 +218,7 @@ plot(erreur.value(1,:));xlim([20 500])
 figure(10)
 subplot(311)
 plot(t.Fsweep_avg,20*log10([H_simu_reel.h_sig_fft(:,1) H_simu_virt.h_sig_fft(:,1)]));xlim([20 500])
-legend('Simu real','Simu ambisonics')
+legend('Simu target','Simu ambisonics')
 subplot(312)
 plot(t.Fsweep_avg,angle([H_simu_reel.h_sig_fft(:,1) H_simu_virt.h_sig_fft(:,1)]));xlim([20 500])
 subplot(313)
@@ -235,8 +238,8 @@ plot(mean(erreur.value))
 % erreur.vectminima=[48,225,421,740,1044,1307,2114];
 erreur.vectminima=[100,256,617,1409,1821];
 
-text.b='Measured real source';text.a='Measured ambisonics source';text.c='Relative error';
-texts.b='Simulated real source';texts.a='Simulated ambisonics source';texts.c='Relative error';texts.freq=text.freq;
+text.b='Measured target source';text.a='Measured ambisonics source';text.c='Relative error';
+texts.b='Simulated target source';texts.a='Simulated ambisonics source';texts.c='Relative error';texts.freq=text.freq;
 
 for ii=1:length(erreur.vectminima)
 ct.fig=gcf;

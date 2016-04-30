@@ -26,12 +26,21 @@ for jj=1:ct.N_mic
         if ii==0;
             var.sum_Bmn_Ymn = var.Bmn_Ymn(1,:) ;
             var.pressure_diffr = permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Hprim ;
-            var.pressure_direc = permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int ;
+%             var.pressure_direc = permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int ;
             test3=var.pressure_diffr;
         else
             var.sum_Bmn_Ymn = sum(var.Bmn_Ymn(var.m_sum_vect(ii)+1:var.m_sum_vect(ii+1),:),1) ;
             var.pressure_diffr = sum([var.pressure_diffr, permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Hprim],2) ;
             test3(ii+1)=permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Hprim;
+<<<<<<< HEAD
+%             var.pressure_direc = sum([var.pressure_direc, permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int],2) ;
+
+        end
+    end
+    Pressure.difract(:,jj)=var.pressure_diffr;
+%     Pressure.direct(:,jj)=var.pressure_direc;
+
+=======
             var.pressure_direc = sum([var.pressure_direc, permute(var.sum_Bmn_Ymn,[2, 1, 3]).*var.Bessel_int],2) ;
             
         end
@@ -39,6 +48,7 @@ for jj=1:ct.N_mic
     Pressure.difract(:,jj)=var.pressure_diffr;
     Pressure.direct(:,jj)=var.pressure_direc;
     
+>>>>>>> refs/remotes/origin/master
     
 end
 

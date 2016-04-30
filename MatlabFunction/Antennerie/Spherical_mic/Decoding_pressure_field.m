@@ -10,7 +10,12 @@ for jj=1:ct.N_mic
     
     % var.pressure = zeros(N.N_sweep,ct.M_th) ;------� tic toc method choice
     for ii=0:M
+<<<<<<< HEAD
+        var.sum_Bmn_Ymn = sum(var.Bmn_Ymn(1:var.m_sum_vect(ii+1),:),1) ;
+        var.Bessel_int = 1i^(ii)*(Bessel_sph(ii,ct.k.*Antenna.R(jj)));
+=======
         var.Bessel_int = 1i^(ii)*(Bessel_sph(ii,ct.k.*Antenna.Rmicro(jj)));
+>>>>>>> refs/remotes/origin/master
         if ii==0;
             
             
@@ -23,8 +28,13 @@ for jj=1:ct.N_mic
             
         end
     end
+<<<<<<< HEAD
+    Pressure(jj)=var.pressure_direc;
+
+=======
     Pressure(:,jj)=var.pressure_direc;
     
+>>>>>>> refs/remotes/origin/master
     
 end
 % var.pressure(1,:)=0;% does it r

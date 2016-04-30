@@ -10,7 +10,7 @@ end;
 N=length(vector);
 dfe=Fs/N;
 freq=0:dfe:(N-1)*dfe;
-fourier=fft(vector);
+fourier=fft_norm(vector);
 
 if p==1
     semilogx(freq,20*log10(abs(fourier)/2e-5))

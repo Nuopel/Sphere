@@ -12,7 +12,7 @@ kk=1;
 %% Choix de la source (Ae^j(wt-kx))
 
 A=1;
-f=1700; % frequency of the wave
+f=1000; % frequency of the wave
 w=2*pi*f;
 c=340;k=w/c; % sound speed, wave number
 
@@ -55,7 +55,7 @@ for M= [3 4 5 ]
     Fm1_mat= diag(Fm1_vect);
     w= diag(w);
     % S2=w*Ymn_n3d_mat'*Bmn_mat; % decodage onde plane
-    S2=w*Ymn_n3d_mat'*Fm1_mat*Bmn_mat; % decodage spherical wave
+    S2=w*Ymn_n3d_mat.'*Fm1_mat*Bmn_mat; % decodage spherical wave
     
     %% Antenne de mesure
     pasx_m = 0.006; % pas de l'antenne
