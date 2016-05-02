@@ -15,7 +15,7 @@ Ymn.Micrecons =  sph_harmonic( ct.M, ct.N_mic, Sphmic.theta, Sphmic.phi ) ; %con
 
 %  Calculation of the Bmn coefficient 
 for ii=1:N.N_sweep
-    Bmn(:,ii) = diag(1./var.Hprim(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*permute(Pressure.difract(ii,:),[2 1]) ;
+    Bmn(:,ii) = diag(1./var.Hprim(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure.difract(:,ii) ;
     disp(ii) ;
 end
 

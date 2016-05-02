@@ -201,7 +201,7 @@ a=mean(erreur.value');
 a2=mean(erreur.value_simu');
 plot([a(Antenna.index_sc)' a2(Antenna.index_sc)'])
 set(gca,'XTick',1:10:56);set(gca,'XTickLabel',Antenna.Rmicro_sc(1:10:end));
-xlabel('Microphone');ylabel('Mean error mic');
+xlabel('Microphone distance from center');ylabel('Mean error mic');
 legend('Meas','Simu')
 
 

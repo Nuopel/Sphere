@@ -1,4 +1,10 @@
 function [ Bmn ] = Bmn_monopole_encodage(order, source,ct,var )
+%% Verification sens des matrices
+[a, b ]=size(ct.k);
+if b>a
+    ct.k=ct.k.';
+end
+
 %% Encode Bmn coefficient using spherical harmonics
 
 for ii = 0:order
@@ -7,11 +13,9 @@ end
 
 if sum(isnan(Fm))>0
 Fm(isnan(Fm))=0;
-disp('Careful Nand value change to 0')
+disp('Careful Nand value changed to 0')
 end
-
 Ymn.source = sph_harmonic( order,1,source.theta,source.phi ) ;
 Bmn = bsxfun(@times,Fm,permute(Ymn.source,[2 1])) ;
-
 end
 
