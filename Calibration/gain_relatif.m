@@ -22,9 +22,13 @@ end
 
 %% calcul delay
 
-[maxi.max_cible, delay.cible]=max(H_cible.h_sig(30:700,:));
-maxi.grid=reshape(delay.cible,[8 7])
+[maxi.max_cible, delay.cible]=max(H_cible.h_sig(30:700,:));maxi.max_cible=maxi.max_cible.';delay.cible=delay.cible.';
+maxi.grid=reshape(delay.cible,[8 7]);
 ct.c_air=0.381/(mean(abs(maxi.grid(:,1)-maxi.grid(:,end)))/ct.Fs_sca);
 
 plot_micro( delay.cible,1)
-
+d=linspace(3e-3,5e-3,50000);
+for ii=1:length(d)
+r_mic(:,ii)=ct.c_air*(delay.cible/ct.Fs_sca-d(ii));
+    
+end
