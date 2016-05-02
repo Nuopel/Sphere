@@ -20,8 +20,8 @@ var.nbr_m=(2.*var.m_vect)+1;
 
 %% Choix de la source (Ae^j(wt-kx))
 [ source.sweep, t, ct, N ] = GenSweep(20, 20000, 4, ct ) ;
-ct.k = 2*pi*10000/340;
-N.N_sweep=1;
+ct.k = 2*pi.*t.F_sweep/340;
+N.N_sweep=length(t.T_sweep);
 
 %% Define ambisonics set up
 [ ArraySpeaker, ct.N_speaker ] = CreateSpeakerSystem(ct.r_hp_sca);% create the sphere set up, sort in struc Array
@@ -44,15 +44,17 @@ Bmn.source = Bmn_monopole_encodage(ct.M_th,source,ct,var ) ;
 %% Decoding to calculate pressure on the spherical microphone
 
 [ Sphmic,Pressure ] = Decoding_pressure_microphone( Bmn,Sphmic,N,ct,var );
-
+Pressure.difract=Pressure.difract(20000,:).'
 %% Encoding from microphone pressure
+N.N_sweep=1
+ct.k=ct.k(20000);
 Bmn.recons = Bmn_encoding_sph( Pressure,Sphmic,ct,N,var );
 
 %% affichage data
 Bmn.source_tronc = Bmn_monopole_encodage(ct.M,source,ct,var ) ;
 Pressure.p_recons = Pressure_map_SphMic(ct.M,Bmn.recons,ct,N,var);title('Reconstruction sphere mic');
 Pressure.p_target = Pressure_map_SphMic(ct.M,Bmn.source_tronc.',ct,N,var);title('Reconstruction troncation');
-Pressure.monopole = Pressure_map_SphMic(ct.M_th,Bmn.source.',ct,N,var);title('Reconstruction full');
+Pressure.monopole = Pressure_map_SphMic(ct.M_th,Bmn.source(20000,:).',ct,N,var);title('Reconstruction full');
 Pressure.monopole_exp = monopole_pressure(ct.k,source);
 
 [field ,norm_e ]=erreur_n(Pressure.monopole_exp,Pressure.p_recons);
