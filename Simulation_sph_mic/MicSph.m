@@ -20,7 +20,7 @@ var.nbr_m=(2.*var.m_vect)+1;
 
 %% Choix de la source (Ae^j(wt-kx))
 [ source.sweep, t, ct, N ] = GenSweep(20, 20000, 4, ct ) ;
-ct.k = 2*pi.*1508/340;
+ct.k = 2*pi.*355/340;
 N.N_sweep=length(t.T_sweep);
 
 %% Define ambisonics set up
@@ -52,9 +52,9 @@ Bmn.recons = Bmn_encoding_sph( Pressure,Sphmic,ct,N,var );
 
 %% affichage data
 Bmn.source_tronc = Bmn_monopole_encodage(ct.M,source,ct,var ) ;
-Pressure.p_recons = Pressure_map_SphMic(ct.M,Bmn.recons,ct,N,var);%title('Reconstruction sphere mic');
-Pressure.p_target = Pressure_map_SphMic(ct.M,Bmn.source_tronc.',ct,N,var);%title('Reconstruction troncation');
-Pressure.monopole = Pressure_map_SphMic(ct.M_th,Bmn.source.',ct,N,var);%title('Reconstruction full');
+Pressure.p_recons = Pressure_map_SphMic(ct.M,Bmn.recons,ct,N,var);title('Reconstruction sphere mic');
+Pressure.p_target = Pressure_map_SphMic(ct.M,Bmn.source_tronc.',ct,N,var);title('Reconstruction troncation');
+Pressure.monopole = Pressure_map_SphMic(ct.M_th,Bmn.source.',ct,N,var);title('Reconstruction full');
 Pressure.monopole_exp = monopole_pressure(ct.k,source);
 
 [field ,norm_e ]=erreur_n(Pressure.monopole_exp,Pressure.p_recons);
