@@ -12,19 +12,20 @@ N.nbry_sca = 7; % nombre de micros par ligne
 
 
 %% Extraction signal original
-[data.sweep,ct.Fs_sca]=audioread('../../Data/sweep_signal_antenne.wav');
+[data.sweep,ct.Fs_sca]=audioread('../../Data2/Session1/sweep_signal_antenne.wav');
 ct.N_sweep_avg=10;
+
+
 
 %% Extraction of the Data source simulated
 if isfield(data, 'sc_simu')==0
-    [data.hp_simu,ct.Fs2_sca]=audioread('../../Data/source_simu_10avg_1m_135d.w64');data.hp_simu=[data.hp_simu ;zeros(1,56)];
+    [data.hp_simu,ct.Fs2_sca]=audioread('../../Data2/Session1/source_simu_ambi_135d.w64');%data.hp_simu=[data.hp_simu ;zeros(1,50)];
     [data.sc_simu_virt ,H_simu_virt,~,N,ct,~] = simu_impulse( data.hp_simu(1:length(data.hp_simu)/10,:), data.sweep(1:length(data.hp_simu)/10,:),Antenna,ct,N);
     
     
     ct.pos=12;
-    [data.hp_simu_reel,ct.Fs2_sca]=audioread('../../Data/source_reelle_virt.w64');data.hp_simu_reel=[data.hp_simu_reel ;zeros(1,1)];
+    [data.hp_simu_reel,ct.Fs2_sca]=audioread('../../Data2/Session1/source_simu_cible_135d.w64');%data.hp_simu_reel=[data.hp_simu_reel ;zeros(1,1)];
     [data.sc_simu_reel ,H_simu_reel,ArraySpeaker,N,ct,t] = simu_source_reelle( data.hp_simu_reel(1:length(data.hp_simu)/10,:), data.sweep(1:length(data.hp_simu)/10,:),Antenna,ct,N);
-    H_simu_reel.h_sig=H_simu_reel.h_sig/1.07;H_simu_reel.h_sig_fft=H_simu_reel.h_sig_fft/1.07;
 
 end
 
@@ -35,13 +36,17 @@ else
     ct=rmfield(ct,'Fs2_sca');
 end
 
-% simulation source reelle
 
-
+%% Calibration relatve microphone
+a=load('calib_56_mic.mat');
+a.relativ=a.max./a.max(1);
 
 %% Extraction  Data source virtuelle, reelle
-[data.sc_virt, ct.Fs_sca ] =audioread('../../Data/source_virtuelle_10avg_1m_135d.w64');data.sc_virt=[data.sc_virt ;zeros(1,56)];
-[data.sc_reel, ct.Fs2_sca ] =audioread('../../Data/source_reelle_10avg_1m_135d.w64');data.sc_reel=[data.sc_reel ;zeros(1,56)];
+[data.sc_virt, ct.Fs_sca ] =audioread('../../Data2/Session1/source_ambi_135d.w64');data.sc_virt=[data.sc_virt ;zeros(1,56)];
+[data.sc_reel, ct.Fs2_sca ] =audioread('../../Data2/Session1/source_cible_135d.w64');data.sc_reel=[data.sc_reel ;zeros(1,56)];
+data.sc_virt = bsxfun(@times,data.sc_virt,a.relativ.');
+data.sc_reel = bsxfun(@times,data.sc_reel,a.relativ.');
+
 
 if ct.Fs2_sca~=ct.Fs_sca
     disp('Error the sampling frequency is not the same for input and output');
@@ -115,8 +120,9 @@ plot_micro( delay.simu_virt,delay.reel,delay.virt,3)
 %% Mic 24-32 temp plot
 figure(5);
 subplot(121)
-surf(H_simu_reel.h_sig(1:1200,25:32));
+surf(H_simu_reel.h_sig(10:1200,25:32));
 cax=caxis;
+
 shading interp
 view([0 90]);xlim([1 8]);xlabel('Microphone');ylabel('Time in sample ');
 set(gca,'XTick',1:2:8);set(gca,'XTickLabel',25:2:32);
@@ -124,7 +130,7 @@ title('Simulated target source')
 
 
 subplot(122)
-surf(H_simu_virt.h_sig(1:1200,25:32));
+surf(H_simu_virt.h_sig(10:1200,25:32));
 shading interp
 view([0 90]);xlim([1 8]);xlabel('Microphone');
 set(gca,'XTick',1:2:8);set(gca,'XTickLabel',25:2:32);
@@ -133,7 +139,7 @@ caxis(cax)
 
 figure(6);
 subplot(121)
-surf(H_reel.h_sig(1:1200,25:32));
+surf(H_reel.h_sig(10:1200,25:32));
 shading interp
 title('target source')
 view([0 90]);xlim([1 8]);xlabel('Microphone');ylabel('Time in sample ');
@@ -141,7 +147,7 @@ set(gca,'XTick',1:2:8);set(gca,'XTickLabel',25:2:32);
 caxis(cax)
 
 subplot(122)
-surf(H_virt.h_sig(1:1200,25:32));
+surf(H_virt.h_sig(10:1200,25:32));
 shading interp
 view([0 90]);xlim([1 8]);xlabel('Microphone');
 set(gca,'XTick',1:2:8);set(gca,'XTickLabel',25:2:32);
