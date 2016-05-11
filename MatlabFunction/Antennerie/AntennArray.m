@@ -6,7 +6,7 @@ end
 
 Antenna.x=-(pas_m*(nbrx_sca-1))/2:pas_m:(pas_m*(nbrx_sca-1))/2;Antenna.x=Antenna.x+offset.x; % mic position x
 if nbry_sca<0
-    Antenna.y=-(pas_m*(nbry_sca+1))/2:-pas_m:(pas_m*(nbry_sca+1))/2;Antenna.y=Antenna.y+offset.y % mic position y
+    Antenna.y=-(pas_m*(nbry_sca+1))/2:-pas_m:(pas_m*(nbry_sca+1))/2;Antenna.y=Antenna.y+offset.y; % mic position y
 
 else
 Antenna.y=-(pas_m*(nbry_sca-1))/2:pas_m:(pas_m*(nbry_sca-1))/2-offset.y; % mic position y

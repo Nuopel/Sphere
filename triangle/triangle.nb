@@ -1,0 +1,104 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      2740,         95]
+NotebookOptionsPosition[      2344,         77]
+NotebookOutlinePosition[      2691,         92]
+CellTagsIndexPosition[      2648,         89]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"Solve", "[", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"AB", "^", "2"}], "\[Equal]", 
+      RowBox[{
+       RowBox[{"a", "^", "2"}], "+", 
+       RowBox[{"b", "^", "2"}], "-", 
+       RowBox[{"2", "*", "a", "*", "b", "*", 
+        RowBox[{"Cos", "[", "ADB", "]"}]}]}]}], "&&", 
+     RowBox[{
+      RowBox[{"BC", "^", "2"}], "\[Equal]", 
+      RowBox[{
+       RowBox[{"b", "^", "2"}], "+", 
+       RowBox[{"c", "^", "2"}], "-", 
+       RowBox[{"2", "*", "b", "*", "c", "*", 
+        RowBox[{"Cos", "[", "BDC", "]"}]}]}]}], "&&", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"AB", "+", "BC"}], ")"}], "^", "2"}], "\[Equal]", 
+      RowBox[{
+       RowBox[{"a", "^", "2"}], "+", 
+       RowBox[{"c", "^", "2"}], "-", 
+       RowBox[{"2", "*", "a", "*", "c", "*", 
+        RowBox[{"Cos", "[", 
+         RowBox[{"ADB", "+", "BDC"}], "]"}]}]}]}], "&&", 
+     RowBox[{
+      RowBox[{"a", "*", "c", "*", 
+       RowBox[{"Sin", "[", 
+        RowBox[{"ADB", "+", "BDC"}], "]"}]}], "\[Equal]", 
+      RowBox[{
+       RowBox[{"a", "*", "b", "*", 
+        RowBox[{"Sin", "[", "ADB", "]"}]}], "+", 
+       RowBox[{"b", "*", "c", "*", 
+        RowBox[{"Sin", "[", "BDC", "]"}]}]}]}]}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"AB", ",", "BC", ",", "ADB", ",", "BDC"}], "}"}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.671285888498579*^9, 3.671285888500977*^9}, {
+  3.6715563626430855`*^9, 3.6715564139610205`*^9}}],
+
+Cell[BoxData["$Aborted"], "Output",
+ CellChangeTimes->{3.6715564490630283`*^9}]
+}, Open  ]],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.671556405434533*^9, 3.6715564055665407`*^9}}],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{3.671286133986281*^9},
+ NumberMarks->False]
+},
+WindowSize->{1600, 818},
+WindowMargins->{{-8, Automatic}, {Automatic, -8}},
+FrontEndVersion->"10.3 for Microsoft Windows (64-bit) (December 10, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 1477, 42, 70, "Input"],
+Cell[2060, 66, 79, 1, 31, "Output"]
+}, Open  ]],
+Cell[2154, 70, 94, 1, 31, InheritFromParent],
+Cell[2251, 73, 89, 2, 31, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)

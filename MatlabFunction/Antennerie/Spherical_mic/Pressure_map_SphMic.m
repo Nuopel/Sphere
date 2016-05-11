@@ -1,21 +1,14 @@
-function [ Pressure ] = Pressure_map_SphMic(M,Bmn,ct,N,var  )
-% Calculate from Bmn coefficient the pressure map 
+function [ Pressure, var] = Pressure_map_SphMic(M,Bmn,ct,N,var,Antenna  )
+% Calculate from Bmn coefficient the pressure map
+% Samuel Dupont  may 2016
 
-%% creation antenne
-ct.pas_m = 3e-2; % pas de l'antenne
-N.nbrx_sca =50; % nombre de micros par ligne
-N.nbry_sca = 50; % nombre de micros par ligne
-ct.N_mic=N.nbrx_sca*N.nbry_sca;
-[ Antenna ] = AntennArray( ct.pas_m,N.nbrx_sca,N.nbry_sca) ;
 %% Calculate pressure from Bmn coefficient
- Pressure = Decoding_pressure_field(M,Bmn,Antenna,ct,var,N ) ;
+Pressure = Decoding_pressure_field(M,Bmn,Antenna,ct,var,N ) ;
 %% Reconstruction
 
 Pmes_mat = reshape(Pressure	,size(Antenna.X_mat));
-figure
-
 pcolor(Antenna.y,Antenna.x,real(Pmes_mat));
-cax=caxis;
+% cax=caxis;
 shading interp
 r=ones(1,200)*M/(ct.k); theta=linspace(0,2*pi,200);
 [x ,y ]=pol2cart(theta,r);
@@ -24,7 +17,10 @@ plot(x,y,'--r')
 axis equal
 axis tight
 axis([Antenna.y(1) Antenna.y(end) Antenna.x(1) Antenna.x(end)]	)
-
+colorbar
+if isfield(var,'cax')==1
+    caxis(var.cax);
+else
+    var.cax=caxis;
 end
-
-% test
+end
