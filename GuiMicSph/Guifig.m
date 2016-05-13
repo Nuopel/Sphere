@@ -57,6 +57,7 @@ handles.ct.M=5;
 handles.N = 1001;
 handles.sliderfreq = logspace(log10(100),log10(5000),handles.N);
 handles.ct.r_micsph=0.07;
+handles.ct.hankel_order=2;
 
 [~, p] = min(abs(handles.sliderfreq-(5000/10^0.5)));
 set(handles.slider_freq, 'value', (p-1)/(length(handles.sliderfreq)-1));
@@ -67,10 +68,13 @@ set(handles.Phi, 'string', 'Phi = '  );
 
 %% Create antenna 
 ct.pas_m = 2.54*2e-2; % pas de l'antenne
-N.nbrx_sca =7; % nombre de micros par ligne
-N.nbry_sca = 8; % nombre de micros par ligne
+N.nbrx_sca =20; % nombre de micros par ligne
+N.nbry_sca =20; % nombre de micros par ligne
 ct.N_mic=N.nbrx_sca*N.nbry_sca;
 [ handles.Antenna ] = AntennArray( ct.pas_m,N.nbrx_sca,N.nbry_sca) ;
+
+%% Define Spherical microphone set up (same as speaker but smaller)
+[ handles.Sphmic, ct.N_mic ] = CreateSpeakerSystem(handles.ct.r_micsph);% create the sphere set up, sort in struc Array
 
 % Update handles structure
 guidata(hObject, handles);
@@ -209,18 +213,28 @@ if  isfield(handles.ct,'R')==1 && isfield(handles.ct,'Phi')==1 && isfield(handle
 end
 end
 
-if isfield(handles,'data')
-    if  isfield(handles.data,'OutSig')==1 && isfield(handles.data,'CalibMic')==1 && isfield(handles.data,'EntrySig')==1
-        
+if isfield(handles,'data') 
+
+    if  isfield(handles.data,'OutSig')==1  && isfield(handles.data,'EntrySig')==1 && isfield(handles,'Bmn')==0 %%&& isfield(handles.data,'CalibMic')==1
+        [handles.H_Data,handles.t,handles.var  ]= CallProcessingMicSphMeas( handles.data,handles.ct  );
+         handles.H_Data.h_sig_fft=fft(handles.data.OutSig(1:240002,:));
     end
+    ct.pos = closest( handles.ct.k,handles.t.Fsweep_avg*2*pi/340 );
+    handles.ct.N_mic=50;
+    handles.Bmn.recons = Bmn_encoding_sph( handles.H_Data.h_sig_fft(ct.pos,:),handles.Sphmic,handles.ct,handles.var );
+%     handles.Bmn.recons = Bmn_encoding_sph( Pressure.difract,handles.Sphmic,handles.ct,handles.var );
+
+    N.N_sweep=1;handles.ct.N_mic=handles.Antenna.N_mic;
+    Pressure.decodemeas = Decoding_pressure_field(handles.ct.M,handles.Bmn.recons,handles.Antenna,handles.ct,handles.var,N ) ;
     
+    Pressure_map_SphMic_gui(handles.Meas,handles.ct.M, real(Pressure.decodemeas),handles.ct,handles.var,handles.Antenna);
 else
     disp('Load all data before plotting results')
     
     
-    
-end
 
+end
+ guidata(hObject, handles);   
 
 
 % Hints: get(hObject,'Value') returns position of slider
@@ -271,11 +285,11 @@ function EntryFile_Callback(hObject, eventdata, handles)
 % hObject    handle to EntryFile (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[FileName,PathName] = uigetfile('*.w64','File selector');
+[FileName,PathName] = uigetfile('*.wav','File selector');
 text.fullpath_entry = strcat( PathName, FileName );
 [ handles.data.EntrySig, handles.ct.Fs ] = audioread(text.fullpath_entry);
-PathWriter('Default/in.txt',text.fullpath_entry)
-
+PathWriter('Default\in.txt',text.fullpath_entry)
+disp('In Data loaded')
 
 guidata(hObject, handles);
 
@@ -291,7 +305,11 @@ if handles.ct.Fs~=ct.Fs
     disp('Error the sampling frequency is not the same for input and output');
     return;
 end
-PathWriter('Default/out.txt',text.fullpath_out)
+if isfield(handles,'Bmn')
+handles=rmfield(handles,'Bmn');
+end
+disp('Out Data loaded')
+PathWriter('Default\out.txt',text.fullpath_out)
 
 guidata(hObject, handles);
 
@@ -307,7 +325,8 @@ if handles.ct.Fs~=ct.Fs
     disp('Error the sampling frequency is not the same for input and output');
     return;
 end
-PathWriter('Default/calibmic.txt',text.fullpath_CalibMic)
+
+PathWriter('Default\calibmic.txt',text.fullpath_CalibMic)
 guidata(hObject, handles)
 
 
@@ -332,9 +351,14 @@ function Default_Callback(hObject, eventdata, handles)
 % hObject    handle to Default (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.data.OutSig = load('Default/out.txt');
-handles.data.CalibMic = load('Default/calib.txt');
-handles.data.EntrySig = load('Default/in.txt');
+% handles.data.OutSig = load('Default\out.txt');
+% % handles.data.CalibMic = load('Default/calib.txt');
+% handles.data.EntrySig = load('Default\in.txt');
+handles.ct.R=load('Default/R.txt');
+handles.ct.Theta=load('Default/Theta.txt');
+handles.ct.Phi=load('Default/Phi.txt');
+
+
 guidata(hObject, handles);
 
 

@@ -40,7 +40,7 @@ Bmn.source = Bmn_monopole_encodage( ct.M_th,source,ct,var ) ;
 [ Sphmic,Pressure ] = Decoding_pressure_microphone( Bmn,Sphmic,N,ct,var );
 
 %% Encoding from microphone pressure
-Bmn.recons = Bmn_encoding_sph( Pressure,Sphmic,ct,N,var );
+Bmn.recons = Bmn_encoding_sph( Pressure.difract,Sphmic,ct,N,var );
 
 
 %%_________________________________________________________________________
