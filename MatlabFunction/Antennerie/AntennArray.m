@@ -3,7 +3,7 @@ if nargin==3
     offset.x=0;
     offset.y=0;
 end
-
+Antenna.N_mic=nbrx_sca*nbry_sca;
 Antenna.x=-(pas_m*(nbrx_sca-1))/2:pas_m:(pas_m*(nbrx_sca-1))/2;Antenna.x=Antenna.x+offset.x; % mic position x
 if nbry_sca<0
     Antenna.y=-(pas_m*(nbry_sca+1))/2:-pas_m:(pas_m*(nbry_sca+1))/2;Antenna.y=Antenna.y+offset.y; % mic position y

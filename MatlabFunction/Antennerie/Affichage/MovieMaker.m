@@ -39,7 +39,7 @@ for ii=begining:ending
     %        pcolor(Antenna.y,Antenna.x,grid_mat); % plot of the frame
     surf(Antenna.y,Antenna.x,grid_mat); % plot of the frame
     title(ii)
-    caxis(cax)
+%     caxis(cax)
     shading interp
 %     axis equal
 %     axis tight

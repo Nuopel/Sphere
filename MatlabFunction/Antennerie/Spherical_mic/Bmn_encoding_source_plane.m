@@ -10,7 +10,6 @@ function [ Bmn ] = Bmn_encoding_source_plane( Pressure,structure,ct,N,var )
 % Samuel Dupont  may 2016
 
 %% Initialisation
-[ ct.k ] = ResizeColumn( ct.k ) ; % check dimension
 Bmn = zeros(var.m_sum_vect(ct.M+1),N.N_sweep,ct.N) ;% init
 
 Ymn.Micrecons =  sph_harmonic( ct.M, ct.N, structure.theta, structure.phi ) ; %construction of the spherical harmonics at the mic position

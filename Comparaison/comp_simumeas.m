@@ -111,12 +111,12 @@ for jj=1:length(text.freq_opt)
     for ii=1:length(amp)
         [~, pos_sca] = min(abs(t.Fsweep_avg-text.freq_opt(jj))); %index of closest value
         erreur.grid_vect_virto = (H_virt.h_sig_fft(pos_sca,:))';
-        erreur.grid_vect_simu_virt_reproo = ((H_simu_virt.h_sig_fft_repro(pos_sca,:)).*(amp(ii)+1i*amp(ii)))';
+        erreur.grid_vect_simu_virt_reproo = (real(H_simu_virt.h_sig_fft_repro(pos_sca,:)).*amp(ii)+imag(H_simu_virt.h_sig_fft_repro(pos_sca,:)).*1i*amp(ii))';
         erreur.opto(ii)=mean(sqrt(abs(erreur.grid_vect_simu_virt_reproo-erreur.grid_vect_virto).^2./abs(erreur.grid_vect_simu_virt_reproo).^2)*100);
     end
     [~ ,pos(jj) ]= min(erreur.opto );
     erreur.grid_vect_virt(:,jj) = H_virt.h_sig_fft(pos_sca,:)';
-    erreur.grid_vect_simu_virt_repro_correct(:,jj) = ((H_simu_virt.h_sig_fft_repro(pos_sca,:)).*(amp(pos(jj))+1i*amp(pos(jj))))';
+    erreur.grid_vect_simu_virt_repro_correct(:,jj) =(real(H_simu_virt.h_sig_fft_repro(pos_sca,:)).*amp(pos(jj))+imag(H_simu_virt.h_sig_fft_repro(pos_sca,:)).*1i*amp(pos(jj)))';
     erreur.grid_vect_simu_virt_repro(:,jj) = H_simu_virt.h_sig_fft_repro(pos_sca,:)';
     
     erreur.opt(:,jj)=sqrt(abs(erreur.grid_vect_simu_virt_repro_correct(:,jj)-erreur.grid_vect_virt(:,jj)).^2./abs(erreur.grid_vect_simu_virt_repro_correct(:,jj)).^2)*100;
