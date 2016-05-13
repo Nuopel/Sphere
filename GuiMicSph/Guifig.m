@@ -68,8 +68,8 @@ set(handles.Phi, 'string', 'Phi = '  );
 
 %% Create antenna 
 ct.pas_m = 2.54*2e-2; % pas de l'antenne
-N.nbrx_sca =20; % nombre de micros par ligne
-N.nbry_sca =20; % nombre de micros par ligne
+N.nbrx_sca =8; % nombre de micros par ligne
+N.nbry_sca =8; % nombre de micros par ligne
 ct.N_mic=N.nbrx_sca*N.nbry_sca;
 [ handles.Antenna ] = AntennArray( ct.pas_m,N.nbrx_sca,N.nbry_sca) ;
 
