@@ -1,15 +1,15 @@
-clear all;close all;clc
+clear all;%close all;clc
 
 
-[data.EntrySig,ct.Fs]=audioread('../../DataMicSph/Sweep_measure_sphwave.wav');
-[data.OutSig,ct.Fs_sca]=audioread('../../DataMicSph/MICSPH_HP2_TEST.w64');
+[data.EntrySig,ct.Fs]=audioread('../../DataMicSph18_05/sweep_signal_mic_sph.wav');
+[data.OutSig,ct.Fs_sca]=audioread('../../DataMicSph18_05/test_hp14.w64');
 
 [data.outcalib,ct.Fs_sca]=audioread('../../DataMicSph/calib_sinus_100.w64');
 [data.incalib,ct.Fs_sca]=audioread('../../DataMicSph/sinus_calib_100.wav');
 
 data.calib=load('../Calibration/calib_memsbedev_mic.mat')
 data.calib=data.calib.max;data.calib=data.calib/data.calib(1);
-data.outcalib=bsxfun(@rdivide,data.outcalib,data.calib.');
+data.OutSig=bsxfun(@times,data.OutSig,data.calib.');
 
 N.N_sweep=1;
 N.N_mic=50;
@@ -63,14 +63,18 @@ ct.N_mic=N.nbrx_sca*N.nbry_sca;
 % Conditioning signals
 
 %% Operation on variable
+figure
 var.select_freq = 1000 ;
 ct.N_mic=50;
 ct.pos = closest(var.select_freq*2*pi/ct.c_air,var.k);ct.k = var.k(ct.pos) ; 
 Bmn.recons = Bmn_encoding_sph(HData.h_sig_fft(ct.pos,:),Sphmic,ct,var );
 
-figure(1);
+% figure(1);
 ct.N_mic=Antenna.N_mic;
 N.N_sweep=1;
-[Pressure.p_recons, ~ ] = Pressure_map_SphMic(ct.M,Bmn.recons(:,1),ct,N,var,Antenna);title('Reconstruction sphere mic');
+for ii=1:4
+    subplot(2,2,ii)
+ct.M=ii+1;
+[Pressure.p_recons, ~ ] = Pressure_map_SphMic(ct.M,Bmn.recons(1:16,1),ct,N,var,Antenna);title('Reconstruction sphere mic calib 1000-3');
 
 

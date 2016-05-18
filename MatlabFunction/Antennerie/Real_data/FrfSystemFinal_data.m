@@ -34,7 +34,7 @@ n=16;
 fc=2000;
 wn=fc*2/ct.Fs_sca;
 [b,a] = butter(n,wn);
-data_mat=filter(b,a,data_mat);
+% data_mat=filter(b,a,data_mat);
 % sweep_signal_vect=filter(b,a,sweep_signal_vect);
 
 %% Processing of the impulse response and FRF

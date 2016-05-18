@@ -55,3 +55,17 @@ h2=semilogx(f,db(a ));
 grid on;legend([h1(1) h2(1)],'(J_m(kr)^{-1}', 'Fh_{m}(kr)');
 ylim([0 150]);xlim([f(1) f(end)])
 xlabel('Frequency [Hz]');ylabel(' [dB]')
+
+%% Hankel
+
+for ii=0:5
+    for jj=1:length(ct.kr)
+        a(jj,ii+1)=((ct.kr(jj).*ct.r_micsph).^2*Hankel_sph_1_deriv(ii,2,ct.kr(jj).*ct.r_micsph));
+    end
+end
+figure(3)
+semilogx(f,db(a ))
+grid on
+ylim([0 150]);xlim([f(1) f(end)])
+xlabel('Freq [Hz]');ylabel('(Fh_{m}(kr) [dB]')
+legend('0','1','2','3','4','5')
