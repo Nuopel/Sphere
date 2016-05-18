@@ -19,8 +19,8 @@ end
 
 %% Convert the mic (out) signal to the same size than the sweep (in) 
 N.N_sweep=length(sweep_signal_vect);
-data_mat=[data_mat ;zeros(mod(length(data_mat),ct.N_sweep_avg),56)];
-data_mat=data_mat(1:N.N_sweep,:,:);
+% data_mat=[data_mat ;zeros(mod(length(data_mat),ct.N_sweep_avg),56)];
+% data_mat=data_mat(1:N.N_sweep,:,:);
 
 %% Some constant definition and useful vector reprensatation
 
@@ -35,7 +35,7 @@ fc=2000;
 wn=fc*2/ct.Fs_sca;
 [b,a] = butter(n,wn);
 data_mat=filter(b,a,data_mat);
-sweep_signal_vect=filter(b,a,sweep_signal_vect);
+% sweep_signal_vect=filter(b,a,sweep_signal_vect);
 
 %% Processing of the impulse response and FRF
 

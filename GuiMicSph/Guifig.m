@@ -66,10 +66,10 @@ set(handles.R, 'string', 'R = '  );
 set(handles.Theta, 'string', 'Theta = ' );
 set(handles.Phi, 'string', 'Phi = '  );
 
-%% Create antenna 
-ct.pas_m = 2.54*2e-2; % pas de l'antenne
-N.nbrx_sca =8; % nombre de micros par ligne
-N.nbry_sca =8; % nombre de micros par ligne
+%% Create antenna
+ct.pas_m = 2.54*1e-2; % pas de l'antenne
+N.nbrx_sca =40; % nombre de micros par ligne
+N.nbry_sca =40; % nombre de micros par ligne
 ct.N_mic=N.nbrx_sca*N.nbry_sca;
 [ handles.Antenna ] = AntennArray( ct.pas_m,N.nbrx_sca,N.nbry_sca) ;
 
@@ -196,34 +196,34 @@ p = round(D*(handles.N-1)+1);
 handles.slider = round(handles.sliderfreq(p));
 str=sprintf('Frequency = %i ',handles.slider);
 set(handles.TextFreq, 'string', str);
+handles.ct.k = 2*pi*round(handles.sliderfreq(p))/340;
 
 
 if isfield(handles,'ct')
-if  isfield(handles.ct,'R')==1 && isfield(handles.ct,'Phi')==1 && isfield(handles.ct,'Theta')==1
-        handles.ct.k = 2*pi*round(handles.sliderfreq(p))/340;
+    if  isfield(handles.ct,'R')==1 && isfield(handles.ct,'Phi')==1 && isfield(handles.ct,'Theta')==1
         % calculate targets
         [ Pressure ] = CallProcessingMicSphTh( handles.Antenna,handles.ct  );
-        %Plot 
+        %Plot
         var.empty=[];
         var=Pressure_map_gui(handles.Target,real(Pressure.monopole),handles.ct,handles.Antenna,var );
-       
+        
         Pressure_map_SphMic_gui(handles.AmbiTarget,handles.ct.M,Pressure.TargetAmbisonics,handles.ct,var,handles.Antenna);
         
-
+        
+    end
 end
-end
 
-if isfield(handles,'data') 
-
+if isfield(handles,'data')
+    
     if  isfield(handles.data,'OutSig')==1  && isfield(handles.data,'EntrySig')==1 && isfield(handles,'Bmn')==0 %%&& isfield(handles.data,'CalibMic')==1
         [handles.H_Data,handles.t,handles.var  ]= CallProcessingMicSphMeas( handles.data,handles.ct  );
-         handles.H_Data.h_sig_fft=fft(handles.data.OutSig(1:240002,:));
+%         handles.H_Data.h_sig_fft=fft(handles.data.OutSig(1:240002,:));
     end
     ct.pos = closest( handles.ct.k,handles.t.Fsweep_avg*2*pi/340 );
     handles.ct.N_mic=50;
     handles.Bmn.recons = Bmn_encoding_sph( handles.H_Data.h_sig_fft(ct.pos,:),handles.Sphmic,handles.ct,handles.var );
-%     handles.Bmn.recons = Bmn_encoding_sph( Pressure.difract,handles.Sphmic,handles.ct,handles.var );
-
+    %     handles.Bmn.recons = Bmn_encoding_sph( Pressure.difract,handles.Sphmic,handles.ct,handles.var );
+    
     N.N_sweep=1;handles.ct.N_mic=handles.Antenna.N_mic;
     Pressure.decodemeas = Decoding_pressure_field(handles.ct.M,handles.Bmn.recons,handles.Antenna,handles.ct,handles.var,N ) ;
     
@@ -232,9 +232,9 @@ else
     disp('Load all data before plotting results')
     
     
-
+    
 end
- guidata(hObject, handles);   
+guidata(hObject, handles);
 
 
 % Hints: get(hObject,'Value') returns position of slider
@@ -285,16 +285,18 @@ function EntryFile_Callback(hObject, eventdata, handles)
 % hObject    handle to EntryFile (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+% cd ../../DataMicSph
 [FileName,PathName] = uigetfile('*.wav','File selector');
 text.fullpath_entry = strcat( PathName, FileName );
 [ handles.data.EntrySig, handles.ct.Fs ] = audioread(text.fullpath_entry);
 PathWriter('Default\in.txt',text.fullpath_entry)
 disp('In Data loaded')
-
+% cd ../Sphere\GuiMicSph
 guidata(hObject, handles);
 
 % --- Executes on button press in OutFile.
 function OutFile_Callback(hObject, eventdata, handles)
+% cd ../../DataMicSph
 % hObject    handle to OutFile (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -306,11 +308,11 @@ if handles.ct.Fs~=ct.Fs
     return;
 end
 if isfield(handles,'Bmn')
-handles=rmfield(handles,'Bmn');
+    handles=rmfield(handles,'Bmn');
 end
 disp('Out Data loaded')
 PathWriter('Default\out.txt',text.fullpath_out)
-
+% cd ../Sphere\GuiMicSph
 guidata(hObject, handles);
 
 % --- Executes on button press in CalibMic.
@@ -318,15 +320,16 @@ function CalibMic_Callback(hObject, eventdata, handles)
 % hObject    handle to CalibMic (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[FileName,PathName] = uigetfile('*.w64','File selector');
+cd Calibration
+[FileName,PathName] = uigetfile('*.mat','File selector');
 text.fullpath_CalibMic = strcat( PathName, FileName );
-[ handles.data.CalibMic, ct.Fs ] = audioread(text.fullpath_CalibMic);
-if handles.ct.Fs~=ct.Fs
-    disp('Error the sampling frequency is not the same for input and output');
-    return;
+handles.data.CalibMic = load(text.fullpath_CalibMic);
+handles.data.CalibMic =  handles.data.CalibMic.max/( handles.data.CalibMic.max(1));
+if isfield(handles,'Bmn')
+    handles=rmfield(handles,'Bmn');
 end
-
 PathWriter('Default\calibmic.txt',text.fullpath_CalibMic)
+cd ..
 guidata(hObject, handles)
 
 
@@ -357,8 +360,9 @@ function Default_Callback(hObject, eventdata, handles)
 handles.ct.R=load('Default/R.txt');
 handles.ct.Theta=load('Default/Theta.txt');
 handles.ct.Phi=load('Default/Phi.txt');
-
-
+set(handles.RBox, 'String', sprintf('%i',handles.ct.R)) 
+set(handles.ThetaBox, 'String', sprintf('%i',handles.ct.Theta)) 
+set(handles.PhiBox, 'String', sprintf('%i',handles.ct.Phi)) 
 guidata(hObject, handles);
 
 
@@ -443,4 +447,4 @@ function RBox_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-    
+

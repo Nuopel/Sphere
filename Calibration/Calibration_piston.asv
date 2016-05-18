@@ -11,8 +11,8 @@ for ii = 1:ct.N_mic
     eval('[data.meas(:,ii), Fs] = audioread(file) ;') ;
 end
 [freq, data.meas_fft] = ISYfourier(data.meas, Fs);
-[data.max, pos] = max(abs(data.meas_fft(1:end/2,:)));
-data.max=data.max.';
+[pos,data.max] = max(abs(data.meas_fft(1:end/2,:))).';
+
 
 % [data.meas100, Fs] = audioread('../../DataMicSph/calib_sinus_100.w64') ;
 % [data.meas150, Fs] = audioread('../../DataMicSph/calib_sinus_150.w64') ;
@@ -24,4 +24,4 @@ data.max=data.max.';
 % data.max_150=max(abs(data.meas_fft_150(1:end/2,:))).';
 
 % save('calib_56_mic.mat','-struct','data', 'max','-v7.3')
-save('calib_memsbedev_mic.mat','-struct','data', 'max','-v7.3')
+% save('calib_memsbedev_mic.mat','-struct','data', 'max','-v7.3')

@@ -13,11 +13,11 @@ function [Bmn]= Bmn_encoding_sph(Pressure,Sphmic,ct,var)
 %% Initialisation
 
 [ ct.k ] = ResizeColumn( ct.k ) ; % check dimension
-[N.N_sweep,~]=size(Pressure);
+[N.N_sweep,aa]=size(Pressure);
 [ Pressure ] = ResizeColumn( Pressure ) ; % check dimension
 Bmn = zeros(var.m_sum_vect(ct.M+1),N.N_sweep) ;% init
 
-var.Hprim=zeros(1,(ct.M+1)^2);% H_prim init
+var.Hprim=zeros(N.N_sweep,(ct.M+1)^2);% H_prim init
 
 for ii=0:ct.M
     var.Hprim(:,(ii)^2+1:(ii+1)^2) = repmat(1i^(ii-1)./((ct.k.*ct.r_micsph).^2.* ...

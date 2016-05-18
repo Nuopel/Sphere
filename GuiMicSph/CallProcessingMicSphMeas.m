@@ -34,7 +34,6 @@ end
 
 %% Calibration relative microphone
 if isfield(data,'CalibMic') == 1
-    data.CalibMic = data.CalibMic./data.CalibMic(1); % calibrate in function of mic 1
     data.OutSig = bsxfun(@times,data.OutSig,data.CalibMic.'); % Apply calibration
 else
     disp('No calibration data')
