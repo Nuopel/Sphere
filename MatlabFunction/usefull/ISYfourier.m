@@ -13,8 +13,8 @@ freq=0:dfe:(N-1)*dfe;
 fourier=fft_norm(vector);
 
 if p==1
-    semilogx(freq,20*log10(abs(fourier)/2e-5))
-    xlim([20 20000])
+    plot(freq,20*log10(abs(fourier)/2e-5))
+%     xlim([20 20000])
     xlabel('Frequency [Hz]')
     ylabel('Amplitude [dB_{spl}]')
 
