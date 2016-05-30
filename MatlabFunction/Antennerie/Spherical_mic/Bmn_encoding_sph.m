@@ -9,16 +9,19 @@ function [Bmn]= Bmn_encoding_sph(Pressure,Sphmic,ct,var,opt)
 % N : Contains the length of Bmn
 % Samuel Dupont  may 2016
 
-if opt ~=0
+if nargin<5
+    opt=0;
+if opt~=0
     
     opt=1;
     
+end
 end
 
 %% Initialisation
 
 [ ct.k ] = ResizeColumn( ct.k ) ; % check dimension
-[N.N_sweep,aa]=size(Pressure);
+[N.N_sweep, ~]=size(Pressure);
 [ Pressure ] = ResizeColumn( Pressure ) ; % check dimension
 Bmn = zeros(var.m_sum_vect(ct.M+1),N.N_sweep) ;% init
 
@@ -43,16 +46,9 @@ else
     N.k=length(var.k);
     
     %% Filtres theoriques
-    var.Hprim=zeros(N.k,(ct.M+1)^2);% H_prim init
-    
-    for ii=0:ct.M
-        var.Hprim(:,(ii)^2+1:(ii+1)^2) = repmat(1i^(ii-1)./((var.k.*ct.r_micsph).^2.* ...
-            Hankel_sph_1_deriv(ii,ct.hankel_order,var.k.*ct.r_micsph)),1,var.nbr_m(ii+1)) ;
-    end
     var.EqFilt=1./ var.Hprim;
     % Regularisation
     ct.ac=20;% maximum noise amplification
-    
     ct.a=10^(ct.ac/20);% maximal amplification for filter
     ct.a2=sqrt(ct.N_mic)*10^(ct.ac/20);% maximal amplification for filter
     
@@ -60,7 +56,9 @@ else
     
     %Calculation of the regularised filter with tikhonov formula
     var.EqFilt_reg=conj(var.Hprim)./(abs(var.Hprim).^2+ct.lambda^2);
-    
+    for ii=1:N.N_sweep
+        Bmn(:,ii) = diag(var.EqFilt_reg(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(:,ii) ;
+    end
 end
 
 end

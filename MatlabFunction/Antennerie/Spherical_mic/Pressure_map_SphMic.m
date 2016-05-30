@@ -14,6 +14,7 @@ r=ones(1,200)*M/(ct.k); theta=linspace(0,2*pi,200);
 [x ,y ]=pol2cart(theta,r);
 hold on
 plot(x,y,'--r')
+xlabel('x')
 axis equal
 axis tight
 axis([Antenna.y(1) Antenna.y(end) Antenna.x(1) Antenna.x(end)]	)
