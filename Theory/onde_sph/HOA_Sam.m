@@ -28,7 +28,7 @@ N_hp_sca=50; %lebedev grid 6,14,26,38,50...
 titre=['a','b','c','d'];
 for f= [ 300 800 1700  4500 ]
     w=2*pi*f;
-c=340;k=w/c; 
+    c=340;k=w/c; 
     kk=kk+1;
     r_hp_sca =7; % rayon du cercle
     [ x, y, z, w ] = ld_by_order(N_hp_sca);
@@ -47,7 +47,7 @@ c=340;k=w/c;
     
     % [ theta_hp, phi_hp ] = xyz_to_tp ( x, y, z );
     [ theta_hp2_vect, phi_hp2_vect,r ] = cart2sph(pos_hp_vect(:,1),pos_hp_vect(:,2),pos_hp_vect(:,3)); % conversion  to pherical coord possible problem with ref of cart2sph
-    Ymn_n3d_mat=sph_harmonic(M,N_hp_sca,theta_hp2_vect,phi_hp2_vect);
+    Ymn_n3d_mat = sph_harmonic(M,N_hp_sca,theta_hp2_vect,phi_hp2_vect);
     
     %%  Decodage signal hp "C.S=Bmn"
     for ii=0:M

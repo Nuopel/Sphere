@@ -21,7 +21,7 @@ grid on
 
 for ii=0:m
     for jj=1:length(ct.kr)
-        a(jj,ii+1)=((ct.kr(jj).*ct.r_micsph).^2*Hankel_sph_1_deriv(ii,2,ct.kr(jj).*ct.r_micsph));
+        a(jj,ii+1)=((ct.kr(jj)).^2*Hankel_sph_1_deriv(ii,2,ct.kr(jj)));
     end
 end
 figure
@@ -60,11 +60,11 @@ xlabel('Frequency [Hz]');ylabel(' [dB]')
 
 for ii=0:5
     for jj=1:length(ct.kr)
-        a(jj,ii+1)=((ct.kr(jj).*ct.r_micsph).^2*Hankel_sph_1_deriv(ii,2,ct.kr(jj).*ct.r_micsph));
+        a(jj,ii+1)=((ct.kr(jj)).^2*Hankel_sph_1_deriv(ii,2,ct.kr(jj)));
     end
 end
-figure(3)
-semilogx(f,db(a ))
+figure(4)
+semilogx(f,20*log10(abs(a )))
 grid on
 ylim([0 150]);xlim([f(1) f(end)])
 xlabel('Freq [Hz]');ylabel('(Fh_{m}(kr) [dB]')
