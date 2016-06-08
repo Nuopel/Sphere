@@ -1,11 +1,13 @@
 clear all;%close all;clc
 
 
-[data.EntrySig,ct.Fs]=audioread('../../DataMicSph/Sweep_measure_sphwave.wav');
-[data.OutSig,ct.Fs_sca]=audioread('../../DataMicSph/MICSPH_HP2_TEST.w64');
+[data.EntrySig,ct.Fs]=audioread('../../DataMicSph/sweep_signal_mic_sph.wav');
+[data.OutSig,ct.Fs_sca]=audioread('../../DataMicSph/test_hp14.w64');
 
+[data.outcalib,ct.Fs_sc a]=audioread('../../DataMicSph/calib_sinus_100.w64');
+[data.incalib,ct.Fs_sca]=audioread('../../DataMicSph/sinus_calib_100.wav');
 
-data.calib=load('../../DataMicSph/calib_memsbedev_mic.mat')
+data.calib=load('../Calibration/calib_memsbedev_mic.mat')
 data.calib=data.calib.max;data.calib=data.calib/data.calib(1);
 data.OutSig=bsxfun(@times,data.OutSig,data.calib.');
 
@@ -62,11 +64,11 @@ ct.N_mic=N.nbrx_sca*N.nbry_sca;
 
 %% Operation on variable
 figure
-var.select_freq = 3000 ;
+var.select_freq = 1000 ;
 ct.N_mic=50;
 ct.pos = closest(var.select_freq*2*pi/ct.c_air,var.k);ct.k = var.k(ct.pos) ; 
-ct.M=5;
-Bmn.recons = Bmn_encoding_sph(HData.h_sig_fft(ct.pos,:),Sphmic,ct,var,2 );
+ct.M=5
+Bmn.recons = Bmn_encoding_sph(HData.h_sig_fft(ct.pos,:),Sphmic,ct,var );
 
 % figure(1);
 ct.N_mic=Antenna.N_mic;
