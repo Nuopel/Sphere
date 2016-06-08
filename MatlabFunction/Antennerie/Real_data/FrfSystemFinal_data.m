@@ -32,10 +32,10 @@ t.Fsweep_avg=0:ct.dfe_sweep_avg:(N.N_sweep_avg-1)*ct.dfe_sweep_avg;
 
 %% filter (antialiasing)
 n=16;
-fc=2000;
+fc=1800;
 wn=fc*2/ct.Fs_sca;
 [b,a] = butter(n,wn);
-% data_mat=filter(b,a,data_mat);
+% data_mat=filtfilt(b,a,data_mat);
 % sweep_signal_vect=filter(b,a,sweep_signal_vect);
 
 %% Processing of the impulse response and FRF

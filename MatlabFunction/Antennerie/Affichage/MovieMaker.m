@@ -17,14 +17,14 @@ end
 
 %% initialisation of the setting
 
-
+% 
 [~,pos]=max(h_sig(:,1)); % max position for scaling
-grid_mat=reshape(h_sig(pos,:),size(Antenna.Y_mat));
+grid_mat=reshape(real(h_sig(pos,:)),size(Antenna.Y_mat));
 pcolor(Antenna.y,Antenna.x,grid_mat); % plot of the frame
 shading interp
 
 cax = caxis;% register color setting to uniformise the movie
-
+% 
 
 %% initialisation of the setting
 figure(21)
@@ -36,13 +36,14 @@ for ii=begining:ending
     clc;
     
     grid_mat=reshape(real(h_sig(ii,:)),size(Antenna.X_mat));
-    %        pcolor(Antenna.y,Antenna.x,grid_mat); % plot of the frame
-    surf(Antenna.y,Antenna.x,grid_mat); % plot of the frame
+           pcolor(Antenna.y,Antenna.x,grid_mat); % plot of the frame
+%     surf(Antenna.y,Antenna.x,grid_mat); % plot of the frame
     title(ii)
-%     caxis(cax)
+    caxis(cax)
     shading interp
-%     axis equal
-%     axis tight
+%     colorbar
+    axis equal
+    axis tight
     set(gca,'zlim',[min(real(h_sig(:))) max(real(h_sig(:)))] )
     frame = getframe(gcf);
     writeVideo(writerObj, frame);
