@@ -85,7 +85,7 @@ switch opt
             var.h(:,(ii)^2+1:(ii+1)^2)= repmat(var.h(:,(ii)^2+1),1,var.nbr_m(ii+1)) ;
         end
         
-        var.EqFilt_reg=bsxfun(@times,var.EqFilt,abs(var.h(ct.f_select,:)));
+        var.EqFilt_reg=bsxfun(@times,var.EqFilt,var.h(ct.f_select,:));
         
         for ii=1:N.N_sweep
             Bmn(:,ii) = diag(var.EqFilt_reg(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(:,ii) ;

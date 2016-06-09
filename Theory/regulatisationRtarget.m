@@ -35,22 +35,25 @@ var.EqFilt=1./ var.Hprim;
 ct.n=6;
 ct.fc=(1:ct.M).*ct.c_air/(2*pi*ct.r_target);
 ct.wn=ct.fc*2/ct.Fs;
+var.h=ones(ct.N,var.m_sum_vect(ct.M+1));
 for ii=1:ct.M
 [b,a] = butter(ct.n,ct.wn(ii)/2,'high');
-var.h(:,(ii-1)^2+1)=freqz(b,a,ct.N,ct.Fs*2);
-var.h(:,(ii-1)^2+1:(ii)^2)= repmat(var.h(:,(ii-1)^2+1),1,var.nbr_m(ii)) ;
+var.h(:,(ii)^2+1)=freqz(b,a,ct.N,ct.Fs*2);
+var.h(:,(ii)^2+1:(ii+1)^2)= repmat(var.h(:,(ii)^2+1),1,var.nbr_m(ii+1)) ;
 % semilogx(var.f,db(abs(var.h(:,(ii-1)^2+1))))
 % hold on
 end
-var.EqFilt_reg=bsxfunvar.EqFilt
+var.EqFilt_reg=bsxfun(@times,var.EqFilt,var.h);
 
-%%
-% Affichage
+
+%% Affichage
+set(gca,'ColorOrderIndex',1)
 semilogx(var.f,db(var.EqFilt_reg));
+legend('M=0','M=1','M=2','M=3','M=4','M=5');
 %back to default
 set(gca,'ColorOrderIndex',1);hold on
 semilogx(var.f,db(var.EqFilt),'--');
 
 xlabel('Frequency [Hz]');ylabel('Amplitude [dB]');hold off;
-axis([var.f(1), var.f(end) -100 200])
-legend('M=0','M=1','M=2','M=3','M=4','M=5');
+ct.pos=closest(80,var.f);
+axis([var.f(ct.pos), var.f(end/2) -100 200])
