@@ -37,8 +37,8 @@ end
 %% Calculate pressure
 for jj=1:ct.N_mic
     clc ;    fprintf('Microphone %i',jj) ;
-    var.Bmn_Ymn = bsxfun(@times,Bmn.source,Ymn.Mic(:,jj).') ;
-    Pressure.difract(:,jj) = sum(bsxfun(@times,var.Bmn_Ymn,var.Hprim),2) ;
+    var.Bmn_Ymn = bsxfun(@times,Bmn.source,Ymn.Mic(:,jj)) ;
+    Pressure.difract(:,jj) = sum(bsxfun(@times,var.Bmn_Ymn.',var.Hprim),2) ;
 end
 
 

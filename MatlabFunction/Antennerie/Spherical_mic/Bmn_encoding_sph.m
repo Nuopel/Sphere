@@ -9,6 +9,7 @@ function [Bmn]= Bmn_encoding_sph(Pressure,Sphmic,ct,var,opt)
 % N : Contains the length of Bmn
 % Samuel Dupont  may 2016
 
+
 if nargin<5
     opt=0;
 else
@@ -23,10 +24,18 @@ end
 
 
 %% Initialisation
+var.m_vect=0:ct.M;
+var.m_sum_vect=(var.m_vect+1).^2;
+var.nbr_m=(2.*var.m_vect)+1;
 
 [ ct.k ] = ResizeColumn( ct.k ) ; % check dimension
-[N.N_sweep, ~]=size(Pressure);
+
+[a,b]=size(Pressure);
+if a~=1
 [ Pressure ] = ResizeColumn( Pressure ) ; % check dimension
+end
+[N.N_sweep,~]=size(Pressure);
+
 Bmn = zeros(var.m_sum_vect(ct.M+1),N.N_sweep) ;% init
 
 var.k=ct.k;
@@ -43,11 +52,11 @@ end
 Ymn.Micrecons =  sph_harmonic( ct.M, ct.N_mic, Sphmic.theta, Sphmic.phi ) ; %construction of the spherical harmonics at the mic position
 
 %  Calculation of the Bmn coefficient
-disp('Bmn Encoding') ;
+fprintf('\n Bmn Encoding \n') ;
 switch opt
     case 0
         for ii=1:N.N_sweep
-            Bmn(:,ii) = diag(1./var.Hprim(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(:,ii) ;
+            Bmn(:,ii) = diag(1./var.Hprim(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(ii,:).' ;
         end
     case 1 %% Tikhonov
         disp('Tikhonov')
@@ -64,7 +73,7 @@ switch opt
         %Calculation of the regularised filter with tikhonov formula
         var.EqFilt_reg=conj(var.Hprim)./(abs(var.Hprim).^2+ct.lambda^2);
         for ii=1:N.N_sweep
-            Bmn(:,ii) = diag(var.EqFilt_reg(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(:,ii) ;
+            Bmn(:,ii) = diag(var.EqFilt_reg(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(ii,:).' ;
         end
     case 2 % Rtarget
         %% Regularisation
@@ -88,7 +97,7 @@ switch opt
         var.EqFilt_reg=bsxfun(@times,var.EqFilt,abs(var.h(ct.f_select,:)));
         
         for ii=1:N.N_sweep
-            Bmn(:,ii) = diag(var.EqFilt_reg(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(:,ii) ;
+            Bmn(:,ii) = diag(var.EqFilt_reg(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(ii,:).' ;
         end
         
 end

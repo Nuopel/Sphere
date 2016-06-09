@@ -8,7 +8,7 @@ clear variables; close all;clc
 ct.r_hp_sca = 1.07 ;%rayon de la sphere
 ct.r_micsph = 0.02;
 ct.hankel_order =2;
-ct.M_th = 15;
+ct.M_th = 5;
 ct.M=5;
 ct.nbr_M_th=(ct.M_th+1).^1;
 ct.Fs=48000;
@@ -19,8 +19,8 @@ var.m_sum_vect=(var.m_vect+1).^2;
 var.nbr_m=(2.*var.m_vect)+1;
 
 %% Choix de la source (Ae^j(wt-kx))
-[ source.sweep, t, ct, N ] = GenSweep(20, 20000, 4, ct ) ;
-ct.k = 2*pi.*[755 ]/340;
+% [ source.sweep, t, ct, N ] = GenSweep(20, 20000, 4, ct ) ;
+ct.k = 2*pi.*(1:20000)/340;
 N.N_sweep=length(ct.k);
 
 %% Define ambisonics set up
@@ -40,7 +40,7 @@ Bmn.source = Bmn_monopole_encodage( ct.M_th,source,ct,var ) ;
 [ Sphmic,Pressure ] = Decoding_pressure_microphone( Bmn,Sphmic,N,ct,var );
 
 %% Encoding from microphone pressure
-Bmn.recons = Bmn_encoding_sph( Pressure.difract,Sphmic,ct,N,var );
+Bmn.recons = Bmn_encoding_sph( Pressure.difract,Sphmic,ct,var );
 
 
 %%_________________________________________________________________________
@@ -53,16 +53,17 @@ var.k=ct.k;
 N.N_sweep=1;
 
 %% Create antenna 
-ct.pas_m = 2e-2; % pas de l'antenne
-N.nbrx_sca =50; % nombre de micros par ligne
-N.nbry_sca = 50; % nombre de micros par ligne
+ct.pas_m = 4.5e-2; % pas de l'antenne
+N.nbrx_sca =30; % nombre de micros par ligne
+N.nbry_sca = 30; % nombre de micros par ligne
 ct.N_mic=N.nbrx_sca*N.nbry_sca;
-[ Antenna ] = AntennArray( ct.pas_m,N.nbrx_sca,N.nbry_sca) ;
+[ Antenna ] = AntennArray_defined_size( 34,1.5) ;
 
-%% Conditioning signals
+% Conditioning signals
 % Select frequency
-var.select_freq = 100 ;
-var.pos = closest(var.select_freq*2*pi/ct.c_air,var.k);ct.k = var.k(var.pos) ; 
+close all;
+var.select_freq = 350 ;
+var.pos = closest(var.select_freq*2*pi/ct.c_air,var.k);ct.k = var.k(var.pos) ;
 Bmn.source_tronc = Bmn_monopole_encodage( ct.M,source,ct,var ) ;
 [Pressure.monopole_exp ] = monopole_pressure(ct.k,source,Antenna);
 
@@ -74,10 +75,25 @@ subplot(312)
 subplot(313)
 [field ,~ ] = erreur_n(Pressure.p_recons,Pressure.monopole_exp);
 [~]=Pressure_map_(field,ct,Antenna,var,1);
+
+
+grid_mat_erreur=reshape(field,size(Antenna.X_mat));
+[~,hfigc] = contour(Antenna.y,Antenna.x,grid_mat_erreur,[0 14]);
+set(hfigc, 'LineWidth',1.0,'Color', [1 1 1]);
+
+
+
 figure(2)
-[Pressure.p_target, ~ ] = Pressure_map_SphMic(ct.M,Bmn.source_tronc.',ct,N,var,Antenna);title('Reconstruction troncation');
+[Pressure.p_target, ~ ] = Pressure_map_SphMic(ct.M,Bmn.source_tronc.',ct,N,var,Antenna);%title('Reconstruction troncation');
+[field ,~ ] = erreur_n(Pressure.p_recons,Pressure.monopole_exp);
+[~]=Pressure_map_(field,ct,Antenna,var,1);
+
+
+grid_mat_erreur=reshape(field,size(Antenna.X_mat));
+[~,hfigc] = contour(Antenna.y,Antenna.x,grid_mat_erreur,[0 14]);
+set(hfigc, 'LineWidth',1.0,'Color', [1 1 1]);
 figure(3)
-[Pressure.monopole, ~ ] = Pressure_map_SphMic(ct.M_th,Bmn.source(var.pos,:).',ct,N,var,Antenna);title('Reconstruction full');
+[Pressure.monopole, ~ ] = Pressure_map_SphMic(ct.M_th,Bmn.source(var.pos,:).',ct,N,var,Antenna);%title('Reconstruction full');
 
 
 % Bmn.source_tronc=permute(Bmn.source_tronc,[2 1]);

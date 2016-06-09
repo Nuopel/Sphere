@@ -31,8 +31,8 @@ t.Fsweep_avg=0:ct.dfe_sweep_avg:(N.N_sweep_avg-1)*ct.dfe_sweep_avg;
 
 
 %% filter (antialiasing)
-n=16;
-fc=1800;
+n=12;
+fc=1200;
 wn=fc*2/ct.Fs_sca;
 [b,a] = butter(n,wn);
 % data_mat=filtfilt(b,a,data_mat);
