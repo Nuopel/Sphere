@@ -51,15 +51,16 @@ end
 System.h_sig_fft=mean(h_fft_mat,3);%frf
 System.h_sig=real(ifft(System.h_sig_fft));% impulse response
 
-w=tukeywin(2^15,0.25);
-w=[ones(2^14,1); w(2^14:end-1,1)];
+w=tukeywin(2^18,0.25);
+w=[ones(2^16,1); w(end/2:end-1,1)];
 
-System.h_sig=bsxfun(@times,System.h_sig(1:2^15,:),w);
-System.h_sig_fft=fft(System.h_sig);
+System.h_sig=bsxfun(@times,System.h_sig(1:2^17,:),w);
+% System.h_sig_fft=fft(System.h_sig);
 
-N.N_sweep_avg = length(System.h_sig_fft);
-ct.dfe_sweep_avg=ct.Fs_sca/N.N_sweep_avg;
-t.Fsweep_avg=0:ct.dfe_sweep_avg:(N.N_sweep_avg-1)*ct.dfe_sweep_avg;
+% 
+% N.N_sweep_avg = 2^17;
+% ct.dfe_sweep_avg=ct.Fs_sca/(N.N_sweep_avg*2+1);
+% t.Fsweep_avg=0:ct.dfe_sweep_avg:(N.N_sweep_avg-1)*ct.dfe_sweep_avg;
 
 %% Revert the matrix if needed to be in the shape of the input 
 
