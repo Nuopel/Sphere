@@ -3,7 +3,8 @@ clear variables; close all;clc
 % Simulate the behavior of a pherical microphone
 % recording a monopole source positioned on the
 % ambisonics set up
-
+% Auteur : Dupont Samuel
+% Version : 1.0 May 2016
 %% Define constants
 ct.r_hp_sca = 1.07 ;%rayon de la sphere
 ct.r_micsph = 0.02;
@@ -61,8 +62,8 @@ ct.N_mic=N.nbrx_sca*N.nbry_sca;
 
 % Conditioning signals
 % Select frequency
-close all;
-var.select_freq = 350 ;
+% close all;
+var.select_freq = 1500 ;
 var.pos = closest(var.select_freq*2*pi/ct.c_air,var.k);ct.k = var.k(var.pos) ;
 Bmn.source_tronc = Bmn_monopole_encodage( ct.M,source,ct,var ) ;
 [Pressure.monopole_exp ] = monopole_pressure(ct.k,source,Antenna);
@@ -84,6 +85,7 @@ set(hfigc, 'LineWidth',1.0,'Color', [1 1 1]);
 
 
 figure(2)
+subplot(224)
 [Pressure.p_target, ~ ] = Pressure_map_SphMic(ct.M,Bmn.source_tronc.',ct,N,var,Antenna);%title('Reconstruction troncation');
 [field ,~ ] = erreur_n(Pressure.p_recons,Pressure.monopole_exp);
 [~]=Pressure_map_(field,ct,Antenna,var,1);
@@ -92,8 +94,10 @@ figure(2)
 grid_mat_erreur=reshape(field,size(Antenna.X_mat));
 [~,hfigc] = contour(Antenna.y,Antenna.x,grid_mat_erreur,[0 14]);
 set(hfigc, 'LineWidth',1.0,'Color', [1 1 1]);
-figure(3)
+subplot(223)
+
 [Pressure.monopole, ~ ] = Pressure_map_SphMic(ct.M_th,Bmn.source(var.pos,:).',ct,N,var,Antenna);%title('Reconstruction full');
+title(sprintf('%s Hz', num2str(var.select_freq)))
 
 
 % Bmn.source_tronc=permute(Bmn.source_tronc,[2 1]);

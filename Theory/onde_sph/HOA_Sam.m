@@ -147,7 +147,7 @@ for f= [ 300 800 1700  4500 ]
     shading flat
     xlabel('Position x (m)')
     ylabel('Position y (m)')
-                 title(titre(kk))
+    title(titre(kk))
 
     contour(x1_vec,x1_vec,erreur_mat,[0 15]);
 %     hold on
