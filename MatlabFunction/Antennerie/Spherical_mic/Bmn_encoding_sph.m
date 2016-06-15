@@ -52,14 +52,14 @@ end
 Ymn.Micrecons =  sph_harmonic( ct.M, ct.N_mic, Sphmic.theta, Sphmic.phi ) ; %construction of the spherical harmonics at the mic position
 
 %  Calculation of the Bmn coefficient
-fprintf('\n Bmn Encoding \n') ;
+% fprintf('\n Bmn Encoding \n') ;
 switch opt
     case 0
         for ii=1:N.N_sweep
             Bmn(:,ii) = diag(1./var.Hprim(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(ii,:).' ;
         end
     case 1 %% Tikhonov
-        disp('Tikhonov')
+%         disp('Tikhonov')
         
         %% Filtres theoriques
         var.EqFilt=1./ var.Hprim;
