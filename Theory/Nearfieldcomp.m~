@@ -1,0 +1,36 @@
+clear all;close all;clc
+% Plot the shape of the function 1/(i^m J(Kr)), used in order to obtain the
+% Bmn factor for encoding
+
+M = 5;% order of the different bessel func
+ct.r_s = 0.14;% radius of the simulated microphone
+f=linspace(0,20000,1000) ;
+ct.k = f.*2*pi/340 ; 
+ct.kr_hp = f.*2*pi/340*ct.r_hp;
+
+%% Speaker
+
+for ii=0:M
+    for jj=1:length(ct.kr)
+        a(jj,ii+1)=1./(ct.k(jj)/(4*pi)*Hankel_sph(ii,2,ct.kr_hp(jj)));
+    end
+end
+figure(1)
+semilogx(f,20*log10(abs(a)))
+grid on
+xlim([f(1) f(end)])
+xlabel('Freq [Hz]');ylabel('(Fm_{m}(kr) [dB]')
+legend('0','1','2','3','4','5')
+
+
+for ii=0:M
+    for jj=1:length(ct.kr)
+        a(jj,ii+1)=1./(ct.k(jj)/(4*pi)*Hankel_sph(ii,2,ct.kr_hp(jj)));
+    end
+end
+figure(1)
+semilogx(f,20*log10(abs(a)))
+grid on
+xlim([f(1) f(end)])
+xlabel('Freq [Hz]');ylabel('(Fm_{m}(kr) [dB]')
+legend('0','1','2','3','4','5')
