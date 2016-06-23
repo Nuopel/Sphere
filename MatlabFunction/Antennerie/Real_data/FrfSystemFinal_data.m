@@ -1,9 +1,14 @@
-function [ data_mat ,System,N,ct,t] = FrfSystemFinal_data( data_mat,sweep_signal_vect,N,ct )
+function [ data_mat ,System,N,ct,t] = FrfSystemFinal_data( data_mat,sweep_signal_vect,N,ct,fc )
 % Do the Frequency response using the method H=out/in
 %%TO DO implement the frequency cut to remove low frequency
 
 % Do the Frequency response using the method H=out/in
-
+if nargin>4
+    opt=1; 
+    sprintf('\n Out data filtered at %i',fc)
+else 
+    opt=0;
+end
 %% Fft require matrix composed of column vector, check the dimension of the
 % data and revert them if needed
 [a, b ]=size(data_mat);
@@ -31,13 +36,13 @@ t.Fsweep_avg=0:ct.dfe_sweep_avg:(N.N_sweep_avg-1)*ct.dfe_sweep_avg;
 
 
 %% filter (antialiasing)
-n=12;
-fc=1200;
+if opt==1
+n=8;
 wn=fc*2/ct.Fs_sca;
 [b,a] = butter(n,wn);
-% data_mat=filtfilt(b,a,data_mat);
+data_mat=filtfilt(b,a,data_mat);
 % sweep_signal_vect=filter(b,a,sweep_signal_vect);
-
+end
 %% Processing of the impulse response and FRF
 
 

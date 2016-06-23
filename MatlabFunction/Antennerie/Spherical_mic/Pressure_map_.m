@@ -22,7 +22,7 @@ end
 Pmes_mat = reshape(field ,size(Antenna.X_mat)) ;
 
 
-pcolor(Antenna.y,Antenna.x,real(Pmes_mat)) ;
+pcolor(Antenna.x,Antenna.y,real(Pmes_mat)) ;
 shading interp
      r=ones(1,200)*ct.M/(ct.k); theta=linspace(0,2*pi,200);
     [x ,y ] = pol2cart(theta,r);
@@ -30,7 +30,7 @@ shading interp
     plot(x,y,'--r')
 axis equal
 axis tight
-axis([Antenna.y(1) Antenna.y(end) Antenna.x(1) Antenna.x(end)]	)
+axis([Antenna.x(1) Antenna.x(end) Antenna.y(1) Antenna.y(end)]	)
 colorbar
 xlabel('Position x [m]')
 ylabel('Position y [m]')
@@ -42,9 +42,9 @@ else
 end
 if opt==1
     hold on
-    [~,hfigc] = contour(Antenna.y,Antenna.x,real(Pmes_mat),[0 15]);
+    [~,hfigc] = contour(Antenna.x,Antenna.y,real(Pmes_mat),[0 15]);
     set(hfigc, 'LineWidth',1.0,'Color', [1 1 1 ]);
-        [~,hfigc] = contour(Antenna.y,Antenna.x,real(Pmes_mat),[0 30]);
+        [~,hfigc] = contour(Antenna.x,Antenna.y,real(Pmes_mat),[0 30]);
     set(hfigc, 'LineWidth',1.0,'Color', [1 1 0]);
     caxis([0 100])
 

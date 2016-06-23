@@ -1,6 +1,6 @@
 clear variables; close all;clc
 
-% Simulate the behavior of a pherical microphone
+% Simulate the behavior of a spherical microphone
 % recording a monopole source positioned on the
 % ambisonics set up
 % Auteur : Dupont Samuel
@@ -44,8 +44,6 @@ Bmn.source = Bmn_monopole_encodage( ct.M_th,source,ct,var ) ;
 Bmn.recons = Bmn_encoding_sph( Pressure.difract,Sphmic,ct,var );
 
 
-%%_________________________________________________________________________
-
 %% _______________________ Affichage data__________________________________
 %%_________________________________________________________________________
 
@@ -58,47 +56,30 @@ ct.pas_m = 4.5e-2; % pas de l'antenne
 N.nbrx_sca =30; % nombre de micros par ligne
 N.nbry_sca = 30; % nombre de micros par ligne
 ct.N_mic=N.nbrx_sca*N.nbry_sca;
-[ Antenna ] = AntennArray_defined_size( 34,1.5) ;
+[ Antenna ] = AntennArray_defined_size( 34,1.5 ) ;
 
-% Conditioning signals
+%% Conditioning signals
 % Select frequency
-% close all;
 var.select_freq = 1500 ;
 var.pos = closest(var.select_freq*2*pi/ct.c_air,var.k);ct.k = var.k(var.pos) ;
 Bmn.source_tronc = Bmn_monopole_encodage( ct.M,source,ct,var ) ;
 [Pressure.monopole_exp ] = monopole_pressure(ct.k,source,Antenna);
 
 figure(1);
-subplot(311)
-var=Pressure_map_( Pressure.monopole_exp,ct,Antenna,var );
-subplot(312)
-[Pressure.p_recons, ~ ] = Pressure_map_SphMic(ct.M,Bmn.recons(:,var.pos),ct,N,var,Antenna);title('Reconstruction sphere mic');
-subplot(313)
-[field ,~ ] = erreur_n(Pressure.p_recons,Pressure.monopole_exp);
-[~]=Pressure_map_(field,ct,Antenna,var,1);
-
-
-grid_mat_erreur=reshape(field,size(Antenna.X_mat));
-[~,hfigc] = contour(Antenna.y,Antenna.x,grid_mat_erreur,[0 14]);
-set(hfigc, 'LineWidth',1.0,'Color', [1 1 1]);
-
-
-
-figure(2)
-subplot(224)
-[Pressure.p_target, ~ ] = Pressure_map_SphMic(ct.M,Bmn.source_tronc.',ct,N,var,Antenna);%title('Reconstruction troncation');
-[field ,~ ] = erreur_n(Pressure.p_recons,Pressure.monopole_exp);
-[~]=Pressure_map_(field,ct,Antenna,var,1);
-
-
-grid_mat_erreur=reshape(field,size(Antenna.X_mat));
-[~,hfigc] = contour(Antenna.y,Antenna.x,grid_mat_erreur,[0 14]);
-set(hfigc, 'LineWidth',1.0,'Color', [1 1 1]);
+% subplot(411)
+% var=Pressure_map_( Pressure.monopole_exp,ct,var,0,Antenna );
+% title('Real monopole')
 subplot(223)
+[Pressure.p_recons, ~ ] = Pressure_map_SphMic(ct.M,Bmn.recons(:,var.pos),ct,N,var,Antenna);
+title('1500 Hz');
+subplot(224)
+[field ,~ ] = erreur_n(Pressure.p_recons,Pressure.monopole_exp);
+[~]=Pressure_map_(field,ct,var,1,Antenna);
+title('Error');
 
-[Pressure.monopole, ~ ] = Pressure_map_SphMic(ct.M_th,Bmn.source(var.pos,:).',ct,N,var,Antenna);%title('Reconstruction full');
-title(sprintf('%s Hz', num2str(var.select_freq)))
+
+grid_mat_erreur=reshape(field,size(Antenna.X_mat));
+[~,hfigc] = contour(Antenna.y,Antenna.x,grid_mat_erreur,[0 14]);
+set(hfigc, 'LineWidth',1.0,'Color', [1 1 1]);
 
 
-% Bmn.source_tronc=permute(Bmn.source_tronc,[2 1]);
-% [ erreur ,norm_e ] = erreur_n(Bmn.source_tronc, Bmn.recons);

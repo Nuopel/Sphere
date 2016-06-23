@@ -1,5 +1,5 @@
-function [Bmn]= B0_encoding_sph(Pressure,Sphmic,ct,var,opt)
-% Encoding the Bmn coefficient from pressure of the spherical microphone
+function [Bmn]= B0_encoding_sph(Pressure,Sphmic,ct,var)
+% Encoding the B0 coefficient from pressure of the spherical microphone
 % PRESSURE : vector containing the pressure as function of the frequence
 % SPHMIC : structure containing the positions of the microphone
 % CT : structure containing the k vector, the distance of the microphones,
@@ -9,14 +9,7 @@ function [Bmn]= B0_encoding_sph(Pressure,Sphmic,ct,var,opt)
 % N : Contains the length of Bmn
 % Samuel Dupont  may 2016
 
-if nargin<5
-    opt=0;
-if opt~=0
-    
-    opt=1;
-    
-end
-end
+
 
 %% Initialisation
 
@@ -37,28 +30,9 @@ Ymn.Micrecons =  sph_harmonic( 0, ct.N_mic, Sphmic.theta, Sphmic.phi ) ; %constr
 
 %  Calculation of the Bmn coefficient
 disp('Bmn Encoding') ;
-if opt==0
     for ii=1:N.N_sweep
-        Bmn(ii) = diag(1./var.Hprim(1,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(ii,:).' ;
+        Bmn(ii) = diag(1./var.Hprim(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(ii,:).' ;
     end
-else
-    N.k=length(var.k);
-    
-    %% Filtres theoriques
-    var.EqFilt=1./ var.Hprim;
-    % Regularisation
-    ct.ac=20;% maximum noise amplification
-    ct.a=10^(ct.ac/20);% maximal amplification for filter
-    ct.a2=sqrt(ct.N_mic)*10^(ct.ac/20);% maximal amplification for filter
-    
-    ct.lambda=(1-sqrt(1-1/ct.a^2))/(1+sqrt(1-1/ct.a^2));
-    
-    %Calculation of the regularised filter with tikhonov formula
-    var.EqFilt_reg=conj(var.Hprim)./(abs(var.Hprim).^2+ct.lambda^2);
-    for ii=1:N.N_sweep
-        Bmn(ii) = diag(1./var.Hprim(1,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(ii,:).' ;
-    end
-end
-
+    Bmn(1)=0;
 end
 

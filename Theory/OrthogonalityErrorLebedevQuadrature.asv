@@ -1,6 +1,0 @@
-% Compute the orthogonality error affilied to the lebedev quadrature
-% Auteur : Dupont Samuel
-% Version : 1.0 June 2016
-clear variables; close all; clc ;
-
-% This program aim to show the 
