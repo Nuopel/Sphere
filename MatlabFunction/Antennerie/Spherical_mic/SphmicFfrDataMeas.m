@@ -16,7 +16,7 @@ end
 
 %% Average data
 % Select frequency
-[~,HData,~,~,t ] = FrfSystemFinal_data(OutSig,EntrySig,N,ct,20000);
+[~,HData,~,~,t ] = FrfSystemFinal_data(OutSig,EntrySig,N,ct,5000);
 ct.k=2*pi*t.Fsweep_avg/ct.c_air;
 k=ct.k;
 

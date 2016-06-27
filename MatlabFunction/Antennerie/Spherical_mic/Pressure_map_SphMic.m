@@ -13,7 +13,7 @@ Pressure = Decoding_pressure_field(M,Bmn,Antenna,ct,var,N ) ;
 %% Reconstruction
    if opt~=1
 
-Pmes_mat = reshape(Pressure	,size(Antenna.X_mat));
+    Pmes_mat = reshape(Pressure	,size(Antenna.X_mat));
     pcolor(Antenna.y,Antenna.x,real(Pmes_mat));
     % cax=caxis;
     shading interp

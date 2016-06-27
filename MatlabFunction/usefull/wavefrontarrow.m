@@ -24,7 +24,7 @@ else
 quiver(0,0,arrow(1),arrow(2),0, 'MaxHeadSize',1.90,'color',opt)
 end    
 [TH,~] = cart2pol(arrow(1),arrow(2)) ;
-quiver(Antenna.x,Antenna.y,dx,dy)
+% quiver(Antenna.x,Antenna.y,dx,dy)
 
 
 end
