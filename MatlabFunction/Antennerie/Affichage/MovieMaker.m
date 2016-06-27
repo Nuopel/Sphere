@@ -20,7 +20,7 @@ end
 % 
 [~,pos]=max(h_sig(:,1)); % max position for scaling
 grid_mat=reshape(real(h_sig(pos,:)),size(Antenna.Y_mat));
-pcolor(Antenna.y,Antenna.x,grid_mat); % plot of the frame
+pcolor(Antenna.x,Antenna.y,grid_mat); % plot of the frame
 shading interp
 
 cax = caxis;% register color setting to uniformise the movie
@@ -36,7 +36,7 @@ for ii=begining:ending
     clc;
     
     grid_mat=reshape(real(h_sig(ii,:)),size(Antenna.X_mat));
-           pcolor(Antenna.y,Antenna.x,grid_mat); % plot of the frame
+           pcolor(Antenna.x,Antenna.y,grid_mat); % plot of the frame
 %     surf(Antenna.y,Antenna.x,grid_mat); % plot of the frame
     title(ii)
     caxis(cax)

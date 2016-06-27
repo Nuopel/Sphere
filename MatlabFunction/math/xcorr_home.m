@@ -1,5 +1,5 @@
 function [ out ] = xcorr_home(a,b,corrLength)
-% homemade xcorr
+% homemade xcorr funstion
 if nargin == 2;
     Na=length(a);Nb=length(b);
     if Na==Nb

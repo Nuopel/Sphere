@@ -1,4 +1,6 @@
-% Simulation de l impulsion d une onde spheriaue sur un array
+% Simulation de l'impulsion d'une onde spherique sur un array de microphone
+% depuis l'enregistrement des signaux envoye aux haut-parleurs
+% todo: implement speaker signal calculation
 % Auteur : Dupont Samuel
 % Version : 1.0 Mars 2016
 
@@ -7,8 +9,8 @@ close all; clear variables; clc
 
 %% Importation donnee source et entree
 
-[sig_hp_mat,ct.Fs_sca]=audioread('../Data/source_simu_2m_45d.w64');sig_hp_mat=sig_hp_mat(:,1:50)';
-[sweep_signal_vect,~]=audioread('../Data/sweep_signal.wav');sweep_signal_vect=sweep_signal_vect';
+[sig_hp_mat,ct.Fs_sca]=audioread('source_simu_2m_45d.wav');% recorded speaker data
+[sweep_signal_vect,~]=audioread('sweep_signal_antenne.wav');% sweep signal
 
 
 %% Definition des constantes et des vecteurs de representation
@@ -97,4 +99,5 @@ plot(System.h_sig(:,1))
 
 
  %% Affichage data
-MovieMaker(System.h_sig,Antenna,75,300)
+ System.h_sig=System.h_sig(1:10000,:)
+MovieMaker(System.h_sig,Antenna,7900,8000)

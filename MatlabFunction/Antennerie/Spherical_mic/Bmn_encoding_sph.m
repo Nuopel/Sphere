@@ -7,19 +7,27 @@ function [Bmn]= Bmn_encoding_sph(Pressure,Sphmic,ct,var,opt)
 % VAR : structure containing vectors of the sum of harmonics by order and
 %        their number
 % N : Contains the length of Bmn
-% Samuel Dupont  may 2016
+%
+% Options : you can set regularisation filter by setting opt to :
+%             -'tik', tikhonov filters limited at 50 dB 
+%             -'rtarget', filter depending on a desired radius
+%             - nothing, default theoretical filters
+% Examples:
+%           Bmn.recons = Bmn_encoding_sph(HData.h_sig_fft(ct.pos,:),Sphmic,ct,var,'tik' );
+%           Bmn.recons = Bmn_encoding_sph(HData.h_sig_fft(ct.pos,:),Sphmic,ct,var);  
 
+% Auteur : Dupont Samuel
+% Version : 2.0 Fevrier 2016
 
 if nargin<5
     opt=0;
-else
-    if strcmp(opt,'tik')
+elseif strcmp(opt,'tik')
         opt=1;
-    end
-    if strcmp(opt,'rtarget')
+
+elseif strcmp(opt,'rtarget')
         opt=2;
-    end
-    
+else
+    opt=0;
 end
 
 
@@ -30,7 +38,7 @@ var.nbr_m=(2.*var.m_vect)+1;
 
 [ ct.k ] = ResizeColumn( ct.k ) ; % check dimension
 
-[a,b]=size(Pressure);
+[a,~]=size(Pressure);
 if a~=1
 [ Pressure ] = ResizeColumn( Pressure ) ; % check dimension
 end
@@ -55,11 +63,12 @@ Ymn.Micrecons =  sph_harmonic( ct.M, ct.N_mic, Sphmic.theta, Sphmic.phi ) ; %con
 % fprintf('\n Bmn Encoding \n') ;
 switch opt
     case 0
+        disp('Theoretical filters')
         for ii=1:N.N_sweep
             Bmn(:,ii) = diag(1./var.Hprim(ii,:))*Ymn.Micrecons*diag(Sphmic.w)*Pressure(ii,:).' ;
         end
     case 1 %% Tikhonov
-%         disp('Tikhonov')
+        disp('Tikhonov')
         
         %% Filtres theoriques
         var.EqFilt=1./ var.Hprim;

@@ -1,9 +1,17 @@
-function [ data_mat ,System,N,ct,t] = FrfSystemFinal_data( data_mat,sweep_signal_vect,N,ct )
+function [ data_mat ,System,N,ct,t] = FrfSystemFinal_data( data_mat,sweep_signal_vect,N,ct,fc )
 % Do the Frequency response using the method H=out/in
-%%TO DO implement the frequency cut to remove low frequency
+% In: sweep_signal_vect
+% Out: data_mat
+% N and ct: structure of points and constants evolving in the main program
 
-% Do the Frequency response using the method H=out/in
+% Can set a filter at the cut off frequency fc in option
 
+if nargin>4
+    opt=1; 
+    sprintf('\n Out data filtered at %i',fc)
+else 
+    opt=0;
+end
 %% Fft require matrix composed of column vector, check the dimension of the
 % data and revert them if needed
 [a, b ]=size(data_mat);
@@ -20,8 +28,6 @@ end
 %% Convert the mic (out) signal to the same size than the sweep (in) 
 N.N_sweep=length(sweep_signal_vect);
 data_mat=[data_mat ;zeros(abs(mod(length(data_mat),ct.N_sweep_avg)-ct.N_sweep_avg),N.N_mic)];
-% data_mat=[data_mat ; zeros(-mod(length(data_mat),ct.N_sweep_avg)+ct.N_sweep_avg,N.N_mic);
-% data_mat=data_mat(1:N.N_sweep,:,:);
 
 %% Some constant definition and useful vector reprensatation
 
@@ -31,13 +37,12 @@ t.Fsweep_avg=0:ct.dfe_sweep_avg:(N.N_sweep_avg-1)*ct.dfe_sweep_avg;
 
 
 %% filter (antialiasing)
-n=12;
-fc=1200;
+if opt==1
+n=8;
 wn=fc*2/ct.Fs_sca;
 [b,a] = butter(n,wn);
-% data_mat=filtfilt(b,a,data_mat);
-% sweep_signal_vect=filter(b,a,sweep_signal_vect);
-
+data_mat=filtfilt(b,a,data_mat);
+end
 %% Processing of the impulse response and FRF
 
 

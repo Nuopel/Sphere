@@ -1,4 +1,9 @@
 function [ Ymn_n3d_mat ] = sph_harmonic( M,N_hp_sca,theta_hp2_vect,phi_hp2_vect )
+% [ Ymn_n3d_mat ] = sph_harmonic( M,N_hp_sca,theta_hp2_vect,phi_hp2_vect )
+% Calculate the spherical harmonics : ouput Orderxangle
+% M: maximun order of the spherical harmonics, calculate all Ymn up to M
+% N_hp_sca: number of points for which spherical harmonics are calculated
+% phi_hp2_vect,theta_hp2_vect: coordinate of the points to calculates
 
 Ymn_n3d_mat = cell(M+1,1); %declaration
 
@@ -8,7 +13,6 @@ for ii=1:M+1
     
     terme_cos_mat(ii,:) = cos((ii-1)*theta_hp2_vect)';
     Pmn_mat=bsxfun(@times,(-1).^(-abs(0:ii-1)).',legendre(ii-1,sin(phi_hp2_vect)));
-%     Pmn_mat=legendre(ii-1,sin(phi_hp2_vect));
     
     if ii<2
         Ymn_int =Pmn_mat(ii,:);

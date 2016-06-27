@@ -1,9 +1,10 @@
 function [ x, t, ct, N ] = GenSweep( f1,f2,T,ct )
+% [ x, t, ct, N ] = GenSweep( f1,f2,T,ct )
 % Generate a sweep signal 
 % F1 = beginning frequency
 % F2 = end frequency
 % T = number of secong of the sweep
-
+%ct struct containing Fs 
 
 %% Parameter of the sweep signal
 w1 = f1*2*pi ;%begin   frequency

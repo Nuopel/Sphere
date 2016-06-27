@@ -3,7 +3,7 @@ function [ sig_mic_mat ] = DelayImplementation2(ht,sig_hp_mat,D)
 
 %  HT : Matrix of the fir filter delay.
 %  SIG_HP_MAT : signal to convert.
-
+%  D.maxi= full part of the delay
 
 
 %% Verification size of entry signal

@@ -1,4 +1,10 @@
 function [ Antenna ] = AntennArray(pas_m,nbrx_sca,nbry_sca,offset)
+% [ Antenna ] = AntennArray(pas_m,nbrx_sca,nbry_sca,offset)
+% Create a planar array structure depending of:
+% pas_m: spacing in between microphone
+% nbrx_sca,nbry_sca: number of microphone alonx and y respectively
+% 
+% It can be added an offset containing offset.x and offset.y
 if nargin==3
     offset.x=0;
     offset.y=0;
@@ -13,9 +19,9 @@ Antenna.y=-(pas_m*(nbry_sca-1))/2+offset.y:pas_m:(pas_m*(nbry_sca-1))/2+offset.y
 end
 [Antenna.Y_mat,Antenna.X_mat]=meshgrid(Antenna.x,Antenna.y);% create 2 matrix of coordinate associated to the grid
 Antenna.coord_vect = [reshape(Antenna.X_mat,1,numel(Antenna.X_mat));reshape(Antenna.Y_mat,1,numel(Antenna.Y_mat))]; % transform the grid in a single row of pair coordinate of the mic
-
-% Antenna.Rmicro = sqrt(Antenna.coord_vect(1,:).^2+Antenna.coord_vect(2,:).^2);
 [ Antenna.theta, Antenna.phi,Antenna.R] = cart2sph( Antenna.coord_vect(1,:)', Antenna.coord_vect(2,:)',zeros(length(Antenna.coord_vect(2,:)),1) ) ;
+
+%% Sort data with respect to the center (2D plot)
 
 [Antenna.Rmicro_sort, Antenna.index ]= sort(Antenna.R);
 

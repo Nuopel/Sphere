@@ -3,9 +3,9 @@ function h = Fractional_delay_lagrange_matrix(N, delay)
 %          filter h which implements given delay
 %          (in samples).  For best results,
 %          delay should be near N/2 +/- 1.
-
-% TODO implement matrix filter
-% Need a delay column of vector
+%
+%Samuel Dupont
+%May 2016
 [a, b ]=size(delay);
 
 if b>a

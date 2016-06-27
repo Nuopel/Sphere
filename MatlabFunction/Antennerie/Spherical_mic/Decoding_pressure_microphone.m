@@ -1,6 +1,7 @@
 function [ Sphmic,Pressure ] = Decoding_pressure_microphone( Bmn,Sphmic,N,ct,var )
-% Decode the pressure along a spherical array form Bmn coefficient using
-% spherical harmonics
+% [ Sphmic,Pressure ] = Decoding_pressure_microphone( Bmn,Sphmic,N,ct,var )
+% Decode the pressure with a diffracting sphere along a spherical array
+% form using  Bmn coefficient and spherical harmonics
 % BMN : Coefficients containing information about space
 % SPHMIC : struct containg position x, y, z of the microphone
 % N : struct

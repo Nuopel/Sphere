@@ -3,8 +3,10 @@ function h = Fractional_delay_lagrange(N, delay)
 %          filter h which implements given delay
 %          (in samples).  For best results,
 %          delay should be near N/2 +/- 1.
-
-% TODO implement matrix filter
+% Implement matrix filter : Fractional_delay_lagrange_matrix(N, delay)
+%
+%Samuel Dupont
+%May 2016
 n = 0:N;
 h = ones(1,N+1);
 for k = 0:N

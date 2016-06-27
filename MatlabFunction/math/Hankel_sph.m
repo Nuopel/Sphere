@@ -1,4 +1,5 @@
 function [ a ] = Hankel_sph( m,kind,kr)
+% [ a ] = Hankel_sph( m,kind,kr)
 % Function de hankel spherique
 % m = order of the function
 % kind = kind of the function (1 or 2)

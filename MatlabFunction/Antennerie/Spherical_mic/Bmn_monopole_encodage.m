@@ -1,4 +1,10 @@
 function [ Bmn ] = Bmn_monopole_encodage(order, source,ct,var )
+%  Bmn_monopole_encodage(order, source,ct,var )
+% Encode a monopole with ambisonics theory using:
+% order: The truncation order of the serie
+% source : struct containg the position theta and phi of the source
+% ct : struc containing constants (k,r_hp_sca)
+% var : struct
 %% Verification sens des matrices
 [a, b ]=size(ct.k);
 if b>a
@@ -11,8 +17,8 @@ for ii = 0:order
 end
 
 if sum(isnan(Fm))>0
-Fm(isnan(Fm))=0;
-disp('Careful Nand value changed to 0')
+    Fm(isnan(Fm))=0;
+    disp('Careful Nand value changed to 0')
 end
 
 Ymn.source = sph_harmonic( order,1,source.theta,source.phi ) ;

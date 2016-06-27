@@ -1,6 +1,13 @@
 function [ Pressure ] = Decoding_pressure_field(M,Bmn,Antenna,ct,var,N )
-
-
+% [ Pressure ] = Decoding_pressure_field(M,Bmn,Antenna,ct,var,N )
+% Decode the pressure  from Bmn coefficient using
+% spherical harmonics.
+% BMN : Coefficients containing information about space
+% Antenna: struct containg position x, y, z of the virtual microphones
+% N : struct
+% CT : struct 
+% var : struct 
+% Samuel Dupont  may 2016
 
 Ymn.Mic = sph_harmonic( M, ct.N_mic, Antenna.theta, Antenna.phi ) ;
 

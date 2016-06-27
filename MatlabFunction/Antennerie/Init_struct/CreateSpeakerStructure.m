@@ -1,8 +1,6 @@
 function [ Array ] = CreateSpeakerStructure( x, y, z, w )
-%ARRAYCONDITIONING Summary of this function goes here
-%   Detailed explanation goes here
-% x,y and z in radians
-
+%% [ Array ] = CreateSpeakerStructure( x, y, z, w )
+% Create a structure of array
 %% Get L
 
 L = numel(x);

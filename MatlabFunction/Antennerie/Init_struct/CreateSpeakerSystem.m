@@ -6,6 +6,8 @@ function [ ArraySpeaker, N ] = CreateSpeakerSystem(r_hp_sca)
 %   be in in the same way than the physical set up 
 % - Set the sphere radius at r_hp_sca
 % - Use CreateSpeakerStructure function
+%  Example:
+% [ Sphmic, N ] = CreateSpeakerSystem(0.07)
 
 imp=load('data/coords.mat');imp.coords(:,1:3)=imp.coords(:,1:3)*r_hp_sca;imp.coords(:,2)=imp.coords(:,2) ;
 % A=rotz(45*pi/180) ;
