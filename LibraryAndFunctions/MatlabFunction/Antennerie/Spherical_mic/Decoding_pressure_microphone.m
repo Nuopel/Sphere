@@ -11,7 +11,7 @@ function [ Sphmic,Pressure ] = Decoding_pressure_microphone( Bmn,Sphmic,N,ct,var
 
 %% Change vector to desired dimension if needed
 [a, b ] = size(Bmn.source);
-if a>b
+if b>a
     Bmn.source = Bmn.source.';
 end
 

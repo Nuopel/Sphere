@@ -75,15 +75,13 @@ ct.N_mic=N.nbrx_sca*N.nbry_sca;
 
 %% Define Spherical microphone set up (same as speaker but smaller)
 [ handles.Sphmic, ct.N_mic ] = CreateSpeakerSystem(handles.ct.r_micsph);% create the sphere set up, sort in struc Array
-
+addpath('Functions')
 % Update handles structure
 guidata(hObject, handles);
 
 % This sets up the initial plot - only do when we are invisible
 % so window can get raised using Guifig.
-if strcmp(get(hObject,'Visible'),'off')
-    plot(rand(5));
-end
+
 
 % UIWAIT makes Guifig wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -104,22 +102,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-axes(handles.Target);
-cla;
 
-popup_sel_index = get(handles.popupmenu1, 'Value');
-switch popup_sel_index
-    case 1
-        plot(rand(5));
-    case 2
-        plot(sin(1:0.01:25.99));
-    case 3
-        bar(1:.5:10);
-    case 4
-        plot(membrane);
-    case 5
-        surf(peaks);
-end
 
 
 % --------------------------------------------------------------------
