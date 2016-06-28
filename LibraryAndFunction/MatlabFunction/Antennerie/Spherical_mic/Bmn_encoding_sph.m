@@ -15,7 +15,6 @@ function [Bmn]= Bmn_encoding_sph(Pressure,Sphmic,ct,var,opt)
 % Examples:
 %           Bmn.recons = Bmn_encoding_sph(HData.h_sig_fft(ct.pos,:),Sphmic,ct,var,'tik' );
 %           Bmn.recons = Bmn_encoding_sph(HData.h_sig_fft(ct.pos,:),Sphmic,ct,var);  
-
 % Auteur : Dupont Samuel
 % Version : 2.0 Fevrier 2016
 
