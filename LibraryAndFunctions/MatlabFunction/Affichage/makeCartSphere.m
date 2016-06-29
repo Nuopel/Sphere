@@ -84,8 +84,9 @@ sphere(3, :) = sphere(3, :) + cz;
 if plot_sphere
     
     % select suitable axis scaling factor
-    [x_sc, scale, prefix] = scaleSI(max(sphere(:)));  %#ok<ASGLU>
-    
+%     [x_sc, scale, prefix] = scaleSI(max(sphere(:)));  %#ok<ASGLU>
+    scale=1;
+    prefix='';
     % create the figure
     figure;
     plot3(sphere(1, :)*scale, sphere(2,:)*scale, sphere(3,:)*scale, '.');

@@ -84,6 +84,7 @@ for jj=1:length(L)
         set(h, 'LineStyle','none')
         set(findobj(gcf, 'type','axes'), 'Visible','off')
         grid off
-        text(0,-.75,-.75,['L = ', num2str(L(jj)), ', M = ', num2str(-M(ii))])    
+        text(printf('[L = , num2str(L(jj)), M = ', num2str(M(ii))]')
+    end
 end
 end
